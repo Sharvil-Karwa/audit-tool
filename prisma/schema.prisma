@@ -16,6 +16,7 @@ model Audit {
   name       String
   creatorId  String
   equipments Equipment[] @relation("AuditToEquipment")
+  observations Observation[] @relation("AuditToObservation")
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
 }
@@ -52,4 +53,37 @@ model DepartmentEquipment {
   auditId String
   department   Department @relation(fields: [departmentId], references: [id])
   equipment    Equipment  @relation(fields: [equipmentId], references: [id])
+}
+
+model Observation {
+  id                  String                @id @default(uuid())
+  observation         String
+  reference           String
+  auditId             String
+  audit               Audit                 @relation("AuditToObservation", fields: [auditId], references: [id])
+  areas               Area[]                @relation("AreaToObservation")
+  AreaObservation     AreaObservation[]
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+
+  @@index([auditId])
+}
+
+model Area {
+  id                  String                @id @default(uuid())
+  area                String
+  auditId             String
+  observations        Observation[]         @relation("AreaToObservation")
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  AreaObservation     AreaObservation[]
+}
+
+model AreaObservation {
+  id           String     @id @default(uuid())
+  observationId String
+  areaId  String
+  auditId String
+  observation Observation @relation(fields: [observationId], references: [id])
+  area Area  @relation(fields: [areaId], references: [id])
 }

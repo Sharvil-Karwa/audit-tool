@@ -29,6 +29,16 @@ export function MainNav({
       active: pathname === `/${params.auditId}/equipments`,
     },
     {
+      href: `/${params.auditId}/areas`,
+      label: 'Areas',
+      active: pathname === `/${params.auditId}/areas`,
+    },
+    {
+      href: `/${params.auditId}/observations`,
+      label: 'Observations',
+      active: pathname === `/${params.auditId}/observations`,
+    },
+    {
       href: `/${params.auditId}/settings`,
       label: 'Settings',
       active: pathname === `/${params.auditId}/settings`,

@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
 import { Trash } from "lucide-react"
-import {Audit, Equipment} from "@prisma/client"
+import {Audit, Observation} from "@prisma/client"
 import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
 
@@ -26,19 +26,17 @@ import { AlertModal } from "@/components/modals/alert-modal"
 import { useOrigin } from "@/hooks/use-origin"
 
 const formSchema = z.object({
-  name: z.string().min(2),
-  type: z.string().optional(),
-  location: z.string().optional(),
-  id: z.string().min(2),
+  observation: z.string().min(2),
+  reference: z.string().optional()
 });
 
-type EquipmentsFormValues = z.infer<typeof formSchema>
+type ObservationsFormValues = z.infer<typeof formSchema>
 
-interface EquipmentsFormProps {
-  initialData: Equipment | null;
+interface ObservationsFormProps {
+  initialData: Observation | null;
 };
 
-export const EquipmentsForm: React.FC<EquipmentsFormProps> = ({
+export const ObservationsForm: React.FC<ObservationsFormProps> = ({
   initialData
 }) => {
   const params = useParams();
@@ -48,32 +46,30 @@ export const EquipmentsForm: React.FC<EquipmentsFormProps> = ({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const title = initialData ? 'Edit equipment' : 'Create equipment';
-  const description = initialData ? 'Edit an equipment.' : 'Add a new equipment';
-  const toastMessage = initialData ? 'Equipment updated.' : 'Equipment created.';
+  const title = initialData ? 'Edit observation' : 'Create observation';
+  const description = initialData ? 'Edit an observation.' : 'Add a new observation';
+  const toastMessage = initialData ? 'Observation updated.' : 'Observation created.';
   const action = initialData ? 'Save changes' : 'Create';
 
 
-  const form = useForm<EquipmentsFormValues>({
+  const form = useForm<ObservationsFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-        name: '',
-        type: '', 
-        location: '',
-        id: '',
+        observation: '',
+        reference: ''
     }
   });
 
-  const onSubmit = async (data: EquipmentsFormValues) => {
+  const onSubmit = async (data: ObservationsFormValues) => {
     try { 
       setLoading(true);
       if(initialData){
-        await axios.patch(`/api/${params.auditId}/equipments/${params.equipmentId}`, data);
+        await axios.patch(`/api/${params.auditId}/observations/${params.observationId}`, data);
       } else {
-        await axios.post(`/api/${params.auditId}/equipments`, data);
+        await axios.post(`/api/${params.auditId}/observations`, data);
       }
       router.refresh();
-      router.push(`/${params.auditId}/equipments`)
+      router.push(`/${params.auditId}/observations`)
       toast.success(toastMessage);
     } catch (error: any) {
       toast.error('Something went wrong.');
@@ -85,12 +81,12 @@ export const EquipmentsForm: React.FC<EquipmentsFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${params.auditId}/equipments/${params.equipmentId}`);
+      await axios.delete(`/api/${params.auditId}/observations/${params.observationId}`);
       router.refresh();
-      router.push(`/${params.auditId}/equipments`);
-      toast.success('Equipment deleted.');
+      router.push(`/${params.auditId}/observations`);
+      toast.success('Observation deleted.');
     } catch (error: any) {
-      toast.error('Make sure you removed all departments using this equipment first.');
+      toast.error('Make sure you removed all departments using this observation first.');
     } finally {
       setLoading(false);
       setOpen(false);
@@ -122,12 +118,12 @@ export const EquipmentsForm: React.FC<EquipmentsFormProps> = ({
           <div className="grid grid-cols-3 gap-8">
           <FormField
               control={form.control}
-              name="id"
+              name="observation"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Id</FormLabel>
+                  <FormLabel>Observation</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Equipment id" {...field} />
+                    <Input disabled={loading} placeholder="Observation id" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -135,38 +131,12 @@ export const EquipmentsForm: React.FC<EquipmentsFormProps> = ({
             />
             <FormField
               control={form.control}
-              name="name"
+              name="reference"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Reference</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Equipment name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="location"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Location</FormLabel>
-                  <FormControl>
-                    <Input disabled={loading} placeholder="Equipment location" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Type</FormLabel>
-                  <FormControl>
-                    <Input disabled={loading} placeholder="Equipment type" {...field} />
+                    <Input disabled={loading} placeholder="Observation type" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
