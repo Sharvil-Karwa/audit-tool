@@ -20,13 +20,19 @@ const DepartmentPage = async ({
         where:{
             auditId: params.auditId
         }
+    }) 
+
+    const department_equipments = await prismadb.departmentEquipment.findMany({
+        where:{
+            departmentId: params.departmentId
+        }
     })
 
 
     return(
         <div className="flex-col">
             <div className="flex-1 space-y-4 p-8 pt-6">
-                <DepartmentsForm initialData={department} equipments={equipments}/>
+                <DepartmentsForm initialData={department} equipments={equipments} department_equipments={department_equipments}/>
             </div>
         </div>
     );

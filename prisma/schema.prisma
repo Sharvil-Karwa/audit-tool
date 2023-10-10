@@ -6,47 +6,50 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
 model Audit {
-  id        String      @id @default(uuid())
-  name      String
-  creatorId String
+  id         String      @id @default(uuid())
+  name       String
+  creatorId  String
   equipments Equipment[] @relation("AuditToEquipment")
-  departments Department[] @relation("AuditToDepartment")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Department{
-  id String @id @default(uuid())
-  name String 
-  auditId String
-  audit    Audit   @relation("AuditToDepartment", fields: [auditId], references: [id])
-  equipments Equipment[] @relation("DepartmentToEquipment")
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
+}
 
-  @@index([auditId])
+model Department {
+  id                  String                @id @default(uuid())
+  name                String
+  auditId             String
+  equipments          Equipment[]           @relation("EquipmentToDepartments")
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  DepartmentEquipment DepartmentEquipment[]
 }
 
 model Equipment {
-  id       String  @id
-  name     String
-  location String
-  type     String
-  auditId  String 
-  departmentId String @default("-1")
-  audit    Audit   @relation("AuditToEquipment", fields: [auditId], references: [id])
-  department Department @relation("DepartmentToEquipment", fields: [departmentId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                  String                @id
+  name                String
+  location            String
+  type                String
+  auditId             String
+  audit               Audit                 @relation("AuditToEquipment", fields: [auditId], references: [id])
+  departments         Department[]          @relation("EquipmentToDepartments")
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  DepartmentEquipment DepartmentEquipment[]
 
   @@index([auditId])
-  @@index([departmentId])
 }
 
-
+model DepartmentEquipment {
+  id           String     @id @default(uuid())
+  departmentId String
+  equipmentId  String
+  auditId String
+  department   Department @relation(fields: [departmentId], references: [id])
+  equipment    Equipment  @relation(fields: [equipmentId], references: [id])
+}

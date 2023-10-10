@@ -21,7 +21,7 @@ export function MainNav({
     {
       href: `/${params.auditId}/departments`,
       label: 'Departments',
-      active: pathname === `/${params.auditId}/deparments`,
+      active: pathname === `/${params.auditId}/departments`,
     },
     {
       href: `/${params.auditId}/equipments`,

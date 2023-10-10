@@ -6,9 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
 import { Trash } from "lucide-react"
-import {Audit, Department, Equipment} from "@prisma/client"
+import {Audit, Department, DepartmentEquipment, Equipment} from "@prisma/client"
 import { useParams, useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -36,13 +36,17 @@ type DepartmentsFormValues = z.infer<typeof formSchema>
 
 interface DepartmentsFormProps {
   initialData: Department | null;
-  equipments: Equipment[]
+  equipments: Equipment[];
+  department_equipments: DepartmentEquipment[] | null;
 };
 
 export const DepartmentsForm: React.FC<DepartmentsFormProps> = ({
   initialData,
-  equipments
+  equipments,
+  department_equipments
 }) => {
+
+
   const params = useParams();
   const router = useRouter();
   const origin = useOrigin();
@@ -55,59 +59,18 @@ export const DepartmentsForm: React.FC<DepartmentsFormProps> = ({
   const toastMessage = initialData ? 'Department updated.' : 'Department created.';
   const action = initialData ? 'Save changes' : 'Create';
 
-
   const form = useForm<DepartmentsFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
-        name: '',
-        equipments: []
-    }
+    defaultValues: {
+      name: initialData?.name || '',
+      equipments: department_equipments
+        ? department_equipments.map((deptEquip) => deptEquip.equipmentId)
+        : [],
+    },
   });
-
-
-  // const onSubmit = async (data: DepartmentsFormValues) => { 
-  //   try { 
-
-  //     setLoading(true);
-  //     if(initialData){
-  //       await axios.patch(`/api/${params.auditId}/departments/${params.departmentId}`, data);
-  //     } else {
-  //       await axios.post(`/api/${params.auditId}/departments`, data);
-  //     }
-  //     router.refresh();
-  //     router.push(`/${params.auditId}/departments`)
-  //     toast.success(toastMessage);
-  //   } catch (error: any) {
-  //     toast.error('Something went wrong.');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // const onSubmit = async (data: DepartmentsFormValues) => {
-  //   console.log(data);
   
-  //   // Check if the 'equipments' field is empty and assign it an empty array if it is
-  //   if (!data.equipments) {
-  //     data.equipments = [];
-  //   }
   
-  //   try {
-  //     setLoading(true);
-  //     if (initialData) {
-  //       await axios.patch(`/api/${params.auditId}/departments/${params.departmentId}`, data);
-  //     } else {
-  //       await axios.post(`/api/${params.auditId}/departments`, data);
-  //     }
-  //     router.refresh();
-  //     router.push(`/${params.auditId}/departments`);
-  //     toast.success(toastMessage);
-  //   } catch (error: any) {
-  //     toast.error('Something went wrong.');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+
 
   const onSubmit = async (data: DepartmentsFormValues) => {
     console.log(data);
@@ -203,60 +166,37 @@ export const DepartmentsForm: React.FC<DepartmentsFormProps> = ({
                 </FormItem>
               )}
             />
-            {/* <FormField 
-              control={form.control}
+          <FormField 
+  control={form.control}
+  name="equipments"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel>Equipments</FormLabel>
+      {equipments.map((equipment) => (
+        <div key={equipment.id}>
+          <label>
+            <input
+              type="checkbox"
               name="equipments"
-              render={({field})=>(
-                <FormItem>
-                  <FormLabel>Equipments</FormLabel>
-                  <Select disabled={loading} onValueChange={field.onChange}>
-                  <FormControl>
-                      <SelectTrigger>
-                        <SelectValue  placeholder="Select an equipment" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {equipments.map((equipment) => (
-                        <SelectItem key={equipment.id} value={equipment.id}>{equipment.name} ({equipment.id}-{equipment.location}-{equipment.type})</SelectItem>
-                      ))}
-                    </SelectContent> 
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
-          {initialData && <FormField 
-                              control={form.control}
-                              name="equipments"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Equipments</FormLabel>
-                                  {equipments.map((equipment) => (
-                                    <div key={equipment.id}>
-                                      <label>
-                                        <input
-                                          type="checkbox"
-                                          name="equipments"
-                                          value={equipment.id}
-                                          onChange={(e) => {
-                                            const isChecked = e.target.checked;
-                                            const equipmentId = e.target.value;
-                                            const updatedEquipments = isChecked
-                                              ? [...(field.value || []), equipmentId]
-                                              : (field.value || []).filter((id) => id !== equipmentId);
-                                            field.onChange(updatedEquipments);
-                                          }}
-                                          checked={field.value ? field.value.includes(equipment.id) : false}
-                                        />
-                                        {equipment.name} ({equipment.id}-{equipment.location}-{equipment.type})
-                                      </label>
-                                    </div>
-                                  ))}
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-            }
+              value={equipment.id}
+              onChange={() => {
+                const updatedEquipments = (field.value ?? []).includes(equipment.id)
+                  ? field.value?.filter((id) => id !== equipment.id) ?? []
+                  : [...(field.value ?? []), equipment.id];
+                form.setValue("equipments", updatedEquipments);
+              }}
+              checked={(field.value ?? []).includes(equipment.id)}
+            />
+            {equipment.name} ({equipment.id}-{equipment.location}-{equipment.type})
+          </label>
+        </div>
+      ))}
+      <FormMessage />
+    </FormItem>
+  )}
+/>
+
+            
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}
