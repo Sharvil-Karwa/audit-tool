@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Audit {
+  id        String      @id @default(uuid())
+  name      String
+  creatorId String
+  equipments Equipment[] @relation("AuditToEquipment")
+  departments Department[] @relation("AuditToDepartment")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Department{
+  id String @id @default(uuid())
+  name String 
+  auditId String
+  audit    Audit   @relation("AuditToDepartment", fields: [auditId], references: [id])
+  equipments Equipment[] @relation("DepartmentToEquipment")
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@index([auditId])
+}
+
+model Equipment {
+  id       String  @id
+  name     String
+  location String
+  type     String
+  auditId  String 
+  departmentId String @default("-1")
+  audit    Audit   @relation("AuditToEquipment", fields: [auditId], references: [id])
+  department Department @relation("DepartmentToEquipment", fields: [departmentId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([auditId])
+  @@index([departmentId])
+}
+
+
