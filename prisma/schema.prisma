@@ -96,7 +96,7 @@ model Source{
   updatedAt           DateTime              @updatedAt
 }
 
-model Ratings{
+model Rating{
   id           String     @id @default(uuid())
   rating String
   auditId String
