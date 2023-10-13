@@ -19,6 +19,10 @@ export const columns: ColumnDef<AreaColumn>[] = [
     header: "Id",
   },
   {
+    accessorKey: "createdAt",
+    header: "Date"
+  },
+  {
     id: "actions",
     cell: ({row})=> <CellAction data={row.original} />
   }

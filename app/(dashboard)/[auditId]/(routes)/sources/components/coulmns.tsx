@@ -3,16 +3,16 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { CellAction } from "./cell-action"
 
-export type DepartmentColumn = {
+export type SourceColumn = {
   id: string
-  name: string
+  source: string
   createdAt: string
 }
 
-export const columns: ColumnDef<DepartmentColumn>[] = [
+export const columns: ColumnDef<SourceColumn>[] = [
   {
-    accessorKey: "name",
-    header: "Name",
+    accessorKey: "source",
+    header: "Source",
   },
   {
     accessorKey: "id",

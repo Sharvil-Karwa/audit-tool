@@ -86,4 +86,20 @@ model AreaObservation {
   auditId String
   observation Observation @relation(fields: [observationId], references: [id])
   area Area  @relation(fields: [areaId], references: [id])
+} 
+
+model Source{
+  id           String     @id @default(uuid())
+  source String
+  auditId String
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+}
+
+model Ratings{
+  id           String     @id @default(uuid())
+  rating String
+  auditId String
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
 }
