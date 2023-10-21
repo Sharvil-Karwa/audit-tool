@@ -72,7 +72,7 @@ export const ObservationsForm: React.FC<ObservationsFormProps> = ({
       router.push(`/${params.auditId}/observations`)
       toast.success(toastMessage);
     } catch (error: any) {
-      toast.error('Something went wrong.');
+      toast.error('Observation already exists');
     } finally {
       setLoading(false);
     }
@@ -123,7 +123,7 @@ export const ObservationsForm: React.FC<ObservationsFormProps> = ({
                 <FormItem>
                   <FormLabel>Observation</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Observation id" {...field} />
+                    <Input disabled={loading} placeholder="Observation" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

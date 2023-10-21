@@ -19,6 +19,11 @@ export function MainNav({
       active: pathname === `/${params.auditId}`,
     },
     {
+      href: `/${params.auditId}/records`,
+      label: 'Records',
+      active: pathname === `/${params.auditId}/records`,
+    },
+    {
       href: `/${params.auditId}/departments`,
       label: 'Departments',
       active: pathname === `/${params.auditId}/departments`,
@@ -27,6 +32,11 @@ export function MainNav({
       href: `/${params.auditId}/equipments`,
       label: 'Equipments',
       active: pathname === `/${params.auditId}/equipments`,
+    },
+    {
+      href: `/${params.auditId}/ratings`,
+      label: 'Ratings',
+      active: pathname === `/${params.auditId}/ratings`,
     },
     {
       href: `/${params.auditId}/areas`,
@@ -42,11 +52,6 @@ export function MainNav({
       href: `/${params.auditId}/sources`,
       label: 'Sources',
       active: pathname === `/${params.auditId}/sources`,
-    },
-    {
-      href: `/${params.auditId}/ratings`,
-      label: 'Ratings',
-      active: pathname === `/${params.auditId}/ratings`,
     },
     {
       href: `/${params.auditId}/settings`,

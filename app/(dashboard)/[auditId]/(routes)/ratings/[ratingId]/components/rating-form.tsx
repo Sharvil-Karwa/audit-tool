@@ -70,7 +70,7 @@ export const RatingsForm: React.FC<RatingsFormProps> = ({
       router.push(`/${params.auditId}/ratings`)
       toast.success(toastMessage);
     } catch (error: any) {
-      toast.error('Something went wrong.');
+      toast.error('Rating already exists');
     } finally {
       setLoading(false);
     }

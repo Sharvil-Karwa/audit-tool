@@ -34,7 +34,7 @@ export const AuditModal = () =>{
             const response = await axios.post('/api/audits', values);
             window.location.assign(`/${response.data.id}`);
         } catch (error){
-            toast.error("Something went wrong");
+            toast.error("Audit already exists");
             console.log(error);
         } finally{
             setLoading(false);

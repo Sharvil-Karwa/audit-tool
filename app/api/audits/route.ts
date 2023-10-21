@@ -26,4 +26,21 @@ export async function POST(
         console.log('[AUDITS_POST]', error);
         return new NextResponse ("Internal error", {status:500});
     }
+} 
+
+
+export async function GET(req: Request) {
+  try {
+    const audits = await prismadb.audit.findMany({
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    return NextResponse.json(audits);
+  } catch (error) {
+    console.log('[AUDITS_GET]', error);
+    return new NextResponse("Internal error", { status: 500 });
+  }
 }

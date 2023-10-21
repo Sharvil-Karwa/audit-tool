@@ -10,9 +10,6 @@ const sourcesPage = async ({
 }) => {
 
     const sources = await prismadb.source.findMany({
-        where:{
-            auditId: params.auditId
-        },
         orderBy:{
             createdAt: 'desc'
         }

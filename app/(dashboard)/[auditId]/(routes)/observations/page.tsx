@@ -10,11 +10,8 @@ const observationsPage = async ({
 }) => {
 
     const observations = await prismadb.observation.findMany({
-        where:{
-            auditId: params.auditId
-        },
         orderBy:{
-            createdAt: 'desc'
+            updatedAt: 'desc'
         }
     })
 

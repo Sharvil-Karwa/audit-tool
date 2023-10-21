@@ -96,14 +96,31 @@ export async function POST(
 
   
       // Associate equipment with the department
-      for (const equipmentId of equipments) {
+      for (const equipment of equipments) {
         await prismadb.departmentEquipment.create({
           data: {
             departmentId: createdDepartment.id,
-            equipmentId: equipmentId.id,
-            auditId
+            equipmentId: equipment.id,
+            auditId,
+            dep_name: name,
+            eq_id: equipment.id,
+            eq_name: equipment.name,
+            type: equipment.type,
+            location: equipment.location
           },
-        });
+        }); 
+      }
+
+      for (const eq of equipments) {
+        await prismadb.equipment.update({
+          where:{
+            id: eq.id
+          }, 
+          data:{
+            assigned: true,
+            depId: createdDepartment.id
+          }
+        })
       }
 
       return NextResponse.json(createdDepartment);

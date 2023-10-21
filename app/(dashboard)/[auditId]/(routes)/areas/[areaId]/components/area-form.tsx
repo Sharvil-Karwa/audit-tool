@@ -107,7 +107,7 @@ export const AreasForm: React.FC<AreasFormProps> = ({
       router.push(`/${params.auditId}/areas`);
       toast.success(toastMessage);
     } catch (error: any) {
-      toast.error('Something went wrong.');
+      toast.error('Area already exists');
     } finally {
       setLoading(false);
     }
@@ -187,7 +187,7 @@ export const AreasForm: React.FC<AreasFormProps> = ({
               }}
               checked={(field.value ?? []).includes(observation.id)}
             />
-            {observation.observation} ({observation.reference})
+            {observation.observation} <span className="font-bold">{observation.reference}</span>
           </label>
         </div>
       ))}

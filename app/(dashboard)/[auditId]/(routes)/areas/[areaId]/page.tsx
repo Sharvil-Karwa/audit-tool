@@ -16,11 +16,7 @@ const AreaPage = async ({
         }
     });
 
-    const observations = await prismadb.observation.findMany({
-        where:{
-            auditId: params.auditId
-        }
-    }) 
+    const observations = await prismadb.observation.findMany() 
 
     const area_observations = await prismadb.areaObservation.findMany({
         where:{

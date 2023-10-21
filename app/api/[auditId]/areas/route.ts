@@ -12,11 +12,7 @@ export async function GET(
             return new NextResponse("Audit id is required", { status: 400 });
         }
 
-        const areas = await prismadb.area.findMany({
-            where:{
-                auditId: params.auditId,
-            }
-        });
+        const areas = await prismadb.area.findMany();
 
         return NextResponse.json(areas);
     } catch (error){
@@ -32,15 +28,12 @@ export async function POST(
     try {
 
 
-      const { userId } = auth();
       const body = await req.json();
       const { area, observations } = body;
       const auditId = params.auditId;
 
   
-      if (!userId) {
-        return new NextResponse("Unauthenticated", { status: 401 });
-      }
+      
       if (!area) {
         return new NextResponse("Area is required", { status: 400 });
       }
@@ -53,7 +46,6 @@ export async function POST(
       const auditByCreatorId = await prismadb.audit.findFirst({
         where: {
           id: auditId,
-          creatorId: userId,
         },
       });
   
@@ -101,7 +93,10 @@ export async function POST(
           data: {
             areaId: createdArea.id,
             observationId: observationId.id,
-            auditId
+            auditId,
+            area_name: createdArea.area,
+            obs: observationId.observation,
+            reference: observationId.reference
           },
         });
       }

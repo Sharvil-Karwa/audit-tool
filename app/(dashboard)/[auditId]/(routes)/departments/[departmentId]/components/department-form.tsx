@@ -107,7 +107,7 @@ export const DepartmentsForm: React.FC<DepartmentsFormProps> = ({
       router.push(`/${params.auditId}/departments`);
       toast.success(toastMessage);
     } catch (error: any) {
-      toast.error('Something went wrong.');
+      toast.error('Department already exists');
     } finally {
       setLoading(false);
     }
@@ -166,35 +166,44 @@ export const DepartmentsForm: React.FC<DepartmentsFormProps> = ({
                 </FormItem>
               )}
             />
-          <FormField 
+<FormField 
   control={form.control}
   name="equipments"
   render={({ field }) => (
     <FormItem>
       <FormLabel>Equipments</FormLabel>
-      {equipments.map((equipment) => (
-        <div key={equipment.id}>
-          <label>
-            <input
-              type="checkbox"
-              name="equipments"
-              value={equipment.id}
-              onChange={() => {
-                const updatedEquipments = (field.value ?? []).includes(equipment.id)
-                  ? field.value?.filter((id) => id !== equipment.id) ?? []
-                  : [...(field.value ?? []), equipment.id];
-                form.setValue("equipments", updatedEquipments);
-              }}
-              checked={(field.value ?? []).includes(equipment.id)}
-            />
-            {equipment.name} ({equipment.id}-{equipment.location}-{equipment.type})
-          </label>
-        </div>
-      ))}
+      {equipments
+        .filter((equipment) => 
+          !equipment.assigned || equipment.depId === params.departmentId
+        )
+        .map((equipment) => (
+          <div key={equipment.id}>
+            <label>
+              <input
+                type="checkbox"
+                name="equipments"
+                value={equipment.id}
+                onChange={() => {
+                  let updatedEquipments = field.value ?? [];
+                  if (updatedEquipments.includes(equipment.id)) {
+                    updatedEquipments = updatedEquipments.filter(id => id !== equipment.id);
+                  } else {
+                    updatedEquipments = [...updatedEquipments, equipment.id];
+                  }
+                  form.setValue("equipments", updatedEquipments);
+                }}
+                checked={(field.value ?? []).includes(equipment.id)}
+              />
+              {equipment.name} ({equipment.id}-{equipment.location}-{equipment.type})
+            </label>
+          </div>
+        ))}
       <FormMessage />
     </FormItem>
   )}
 />
+
+
 
             
           </div>

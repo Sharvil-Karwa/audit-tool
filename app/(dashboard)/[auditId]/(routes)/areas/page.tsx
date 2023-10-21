@@ -10,11 +10,8 @@ const areasPage = async ({
 }) => {
 
     const areas = await prismadb.area.findMany({
-        where:{
-            auditId: params.auditId
-        },
         orderBy:{
-            createdAt: 'desc'
+            updatedAt: 'desc'
         }
     })
 

@@ -50,7 +50,6 @@ export async function GET(
       const auditByCreatorId = await prismadb.audit.findFirst({
         where: {
           id: auditId,
-          creatorId: userId,
         },
       });
   
@@ -87,9 +86,12 @@ export async function GET(
       for (const observationId of observations) {
         await prismadb.areaObservation.create({
           data: {
-            areaId: params.areaId,
+            areaId: updatedArea.id,
             observationId: observationId.id,
-            auditId
+            auditId,
+            area_name: updatedArea.area,
+            obs: observationId.observation,
+            reference: observationId.reference
           },
         });
       }

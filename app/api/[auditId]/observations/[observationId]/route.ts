@@ -54,7 +54,6 @@ export async function PATCH(
     const auditByCreatorId = await prismadb.audit.findFirst({
         where:{
             id: params.auditId,
-            creatorId: userId
         }
     }) 
 

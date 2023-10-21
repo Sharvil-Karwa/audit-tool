@@ -4,6 +4,33 @@ import { auth } from "@clerk/nextjs";
 import prismadb from "@/lib/prismadb";
 
 
+
+export async function GET(
+  req: Request,
+  { params }: { params: { auditId: string } }
+) {
+  try{
+
+
+    if (!params.auditId) {
+      return new NextResponse("Audit id is required", { status: 400 });
+    } 
+    const audit = await prismadb.audit.findFirst({
+      where:{
+        id: params.auditId
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    }) 
+    return NextResponse.json(audit);
+  } catch(error){
+    console.log('[AUDIT_GET]', error);
+    return new NextResponse("Internal error", { status: 500 });
+  }
+}
+
 export async function PATCH(
   req: Request,
   { params }: { params: { auditId: string } }
@@ -25,6 +52,7 @@ export async function PATCH(
     if (!params.auditId) {
       return new NextResponse("Audit id is required", { status: 400 });
     }
+
 
     const audit = await prismadb.audit.updateMany({
       where: {

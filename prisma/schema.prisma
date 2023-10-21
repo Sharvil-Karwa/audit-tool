@@ -36,6 +36,8 @@ model Equipment {
   name                String
   location            String
   type                String
+  depId String
+  assigned Boolean
   auditId             String
   audit               Audit                 @relation("AuditToEquipment", fields: [auditId], references: [id])
   departments         Department[]          @relation("EquipmentToDepartments")
@@ -51,6 +53,11 @@ model DepartmentEquipment {
   departmentId String
   equipmentId  String
   auditId String
+  dep_name String
+  eq_id                  String                
+  eq_name                String
+  location            String
+  type                String
   department   Department @relation(fields: [departmentId], references: [id])
   equipment    Equipment  @relation(fields: [equipmentId], references: [id])
 }
@@ -83,7 +90,10 @@ model AreaObservation {
   id           String     @id @default(uuid())
   observationId String
   areaId  String
-  auditId String
+  auditId String 
+  obs String
+  reference String
+  area_name String
   observation Observation @relation(fields: [observationId], references: [id])
   area Area  @relation(fields: [areaId], references: [id])
 } 
@@ -102,4 +112,24 @@ model Rating{
   auditId String
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
-}
+} 
+
+model Record{
+  id           String     @id @default(uuid())
+  auditId String
+  user String 
+  department String
+  equipment String
+  eq_id String
+  type String
+  location String
+  area String
+  reference String
+  comment String
+  rating String
+  source String
+  observation String
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+} 
+

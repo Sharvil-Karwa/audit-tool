@@ -44,13 +44,17 @@ export async function POST(
         
         const equipmentId = await prismadb.equipment.findFirst({
             where:{
-                id:id
+                id:id,
+                auditId: params.auditId
             }
         }) 
 
         if(equipmentId){
             return new NextResponse("Equipment with this ID already exists", { status: 400 });
-        }
+        } 
+
+        const assigned = false;
+        const depId = "";
 
         const equipment = await prismadb.equipment.create({
             data:{
@@ -58,7 +62,9 @@ export async function POST(
                 type,
                 location,
                 id,
-                auditId
+                auditId,
+                assigned,
+                depId
             }
         });
         return NextResponse.json(equipment);

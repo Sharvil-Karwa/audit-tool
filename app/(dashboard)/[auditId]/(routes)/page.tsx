@@ -18,7 +18,6 @@ interface DashboardPageProps {
 
     return(
         <div>
-            Active Audit: {audit?.name}
         </div>
     );
 } 

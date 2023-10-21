@@ -76,7 +76,7 @@ export const EquipmentsForm: React.FC<EquipmentsFormProps> = ({
       router.push(`/${params.auditId}/equipments`)
       toast.success(toastMessage);
     } catch (error: any) {
-      toast.error('Something went wrong.');
+      toast.error('Equipment with this ID already exists');
     } finally {
       setLoading(false);
     }

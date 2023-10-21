@@ -7,28 +7,15 @@ export async function POST(
   { params }: { params: { auditId: string } }
 ) {
     try{
-        const {userId} = auth(); 
         const body = await req.json(); 
         const {observation, reference} = body;
         const auditId = params.auditId; 
 
-        if(!userId){ 
-            return new NextResponse("Unauthenticated", {status:401});
-        }
+       
         if (!auditId) {
             return new NextResponse("Audit id is required", { status: 400 });
         }
 
-        const auditByCreatorId = await prismadb.audit.findFirst({
-            where:{
-                id: auditId,
-                creatorId: userId
-            }
-        }) 
-
-        if(!auditByCreatorId){
-            return new NextResponse("Unauthorized", {status:403});
-        } 
         
         const observationId = await prismadb.observation.findFirst({
             where:{
@@ -60,15 +47,7 @@ export async function GET(
   { params }: { params: { auditId: string } }
 ) {
     try{
-        if (!params.auditId) {
-            return new NextResponse("Audit id is required", { status: 400 });
-        }
-
-        const observations = await prismadb.observation.findMany({
-            where:{
-                auditId: params.auditId,
-            }
-        });
+        const observations = await prismadb.observation.findMany();
 
         return NextResponse.json(observations);
     } catch (error){

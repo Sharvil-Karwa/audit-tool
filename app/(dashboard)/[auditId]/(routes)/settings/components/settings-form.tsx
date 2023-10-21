@@ -58,7 +58,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
       router.refresh();
       toast.success('Audit updated.');
     } catch (error: any) {
-      toast.error('Something went wrong.');
+      toast.error('Audit already exists');
     } finally {
       setLoading(false);
     }
