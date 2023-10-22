@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { CellAction } from "./cell-action"
 
 export type RecordColumn = {
-  id: string
+  id: number
   department: string
   equipment: string
   eq_id: string

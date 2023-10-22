@@ -114,22 +114,23 @@ model Rating{
   updatedAt           DateTime              @updatedAt
 } 
 
-model Record{
-  id           String     @id @default(uuid())
-  auditId String
-  user String 
-  department String
-  equipment String
-  eq_id String
-  type String
-  location String
-  area String
-  reference String
-  comment String
-  rating String
-  source String
+model Record {
+  id          Int       @id @default(autoincrement())
+  auditId     String
+  user        String
+  department  String
+  equipment   String
+  eq_id       String
+  type        String
+  location    String
+  area        String
+  reference   String
+  comment     String
+  rating      String
+  source      String
   observation String
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @updatedAt
-} 
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 

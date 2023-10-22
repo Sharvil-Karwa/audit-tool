@@ -43,7 +43,7 @@ export const RecordsForm: React.FC<RecordsFormProps> = ({ initialData }) => {
   return (
     <div className="max-w-2xl mx-auto">
         <Table>
-            <TableCaption>Record ID: {id}</TableCaption>
+            <TableCaption>Record ID: obs{id}</TableCaption>
             <TableHeader>
                 <TableRow>
                     <TableHead className="">Parameter</TableHead>

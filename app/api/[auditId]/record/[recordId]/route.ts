@@ -3,28 +3,34 @@ import { auth } from "@clerk/nextjs";
 
 import prismadb from "@/lib/prismadb";
 
-
 export async function GET(
-    req: Request,
-    { params }: { params: { recordId: string } }
-  ) {
-    try {
+  req: Request,
+  { params }: { params: { recordId: string } }
+) {
+  try {
       if (!params.recordId) {
           return new NextResponse("Record id is required", { status: 400 });
-      } 
-  
+      }
+
+      const rid = parseInt(params.recordId, 10); // Use parseInt to convert the string to an integer
+
+      if (isNaN(rid)) {
+          return new NextResponse("Invalid record id", { status: 400 });
+      }
+
       const record = await prismadb.record.findUnique({
-        where: {
-          id: params.recordId,
-        }
+          where: {
+              id: rid
+          }
       });
-    
+
       return NextResponse.json(record);
-    } catch (error) {
+  } catch (error) {
       console.log('[RECORD_GET]', error);
       return new NextResponse("Internal error", { status: 500 });
-    }
-  };
+  }
+};
+
   
 
 export async function DELETE(
@@ -46,10 +52,15 @@ export async function DELETE(
         return new NextResponse("Record id is required", { status: 400 });
     } 
 
+    const rid = parseInt(params.recordId, 10); // Use parseInt to convert the string to an integer
+
+      if (isNaN(rid)) {
+          return new NextResponse("Invalid record id", { status: 400 });
+      }
 
     const record = await prismadb.record.deleteMany({
       where: {
-        id: params.recordId,
+        id: rid
       }
     });
   

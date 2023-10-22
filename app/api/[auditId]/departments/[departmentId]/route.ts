@@ -3,10 +3,8 @@ import { auth } from "@clerk/nextjs";
 
 import prismadb from "@/lib/prismadb";
 
-const express = require('express');
-const os = require('os');
 
-const app = express();
+
 
 export async function GET(
     req: Request,

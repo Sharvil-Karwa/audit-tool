@@ -149,7 +149,7 @@ export function DataTable<TData, TValue>({
         <Table>
             <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
+                <TableRow >
                 {headerGroup.headers.map((header) => {
                     return (
                     <TableHead key={header.id}>
