@@ -34,7 +34,7 @@ export const ObservationClient: React.FC<ObservationClientProps> = ({
                 </Button>
             </div>
             <Separator />
-            <DataTable columns={columns} data={data} searchKey="name"/>
+            <DataTable columns={columns} data={data} searchKey="observation"/>
             <Separator />
             <ApiList entityName="observations" entityIdName="observationId"/>
         </>

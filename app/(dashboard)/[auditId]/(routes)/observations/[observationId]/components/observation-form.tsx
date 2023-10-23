@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
 import { Trash } from "lucide-react"
-import {Audit, Observation} from "@prisma/client"
+import {Audit, Observation, Reference} from "@prisma/client"
 import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
 
@@ -25,6 +25,9 @@ import { Heading } from "@/components/ui/heading"
 import { AlertModal } from "@/components/modals/alert-modal"
 import { useOrigin } from "@/hooks/use-origin"
 
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
+
 const formSchema = z.object({
   observation: z.string().min(2),
   reference: z.string().optional()
@@ -34,10 +37,12 @@ type ObservationsFormValues = z.infer<typeof formSchema>
 
 interface ObservationsFormProps {
   initialData: Observation | null;
+  references: Reference[]
 };
 
 export const ObservationsForm: React.FC<ObservationsFormProps> = ({
-  initialData
+  initialData,
+  references
 }) => {
   const params = useParams();
   const router = useRouter();
@@ -135,9 +140,18 @@ export const ObservationsForm: React.FC<ObservationsFormProps> = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Reference</FormLabel>
-                  <FormControl>
-                    <Input disabled={loading} placeholder="Observation type" {...field} />
-                  </FormControl>
+                  <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue defaultValue={field.value} placeholder="Select reference" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {references.map((reference) => (
+                        <SelectItem key={reference.id} value={reference.reference}>{reference.reference}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

@@ -31,7 +31,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 const formSchema = z.object({
   reference: z.string().min(1),
   mainRef: z.string().optional(),
-  country: z.string().optional(),
+  country: z.string().min(1)
 });
 
 type ReferencesFormValues = z.infer<typeof formSchema>
@@ -75,6 +75,10 @@ export const ReferencesForm: React.FC<ReferencesFormProps> = ({
       "mainRef" : main ? data.reference : data.mainRef,
       "country" : data.country ? data.country : "",
       "isMain" : main ? "true" : "false"
+    } 
+    if(!main && !data.mainRef){
+      toast.error("Choose main reference")
+      return;
     }
     try { 
       setLoading(true);

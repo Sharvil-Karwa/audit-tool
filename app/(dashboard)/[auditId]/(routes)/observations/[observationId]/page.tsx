@@ -15,11 +15,17 @@ const ObservationPage = async ({
         }
     });
 
+    const references = await prismadb.reference.findMany({
+        where:{
+            isMain : "true"
+        }
+    })
+
 
     return(
         <div className="flex-col">
             <div className="flex-1 space-y-4 p-8 pt-6">
-                <ObservationsForm initialData={observation} />
+                <ObservationsForm initialData={observation} references={references}/>
             </div>
         </div>
     );
