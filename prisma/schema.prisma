@@ -25,10 +25,8 @@ model Department {
   id                  String                @id @default(uuid())
   name                String
   auditId             String
-  equipments          Equipment[]           @relation("EquipmentToDepartments")
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
-  DepartmentEquipment DepartmentEquipment[]
 }
 
 model Equipment {
@@ -40,26 +38,10 @@ model Equipment {
   assigned Boolean
   auditId             String
   audit               Audit                 @relation("AuditToEquipment", fields: [auditId], references: [id])
-  departments         Department[]          @relation("EquipmentToDepartments")
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
-  DepartmentEquipment DepartmentEquipment[]
 
   @@index([auditId])
-}
-
-model DepartmentEquipment {
-  id           String     @id @default(uuid())
-  departmentId String
-  equipmentId  String
-  auditId String
-  dep_name String
-  eq_id                  String                
-  eq_name                String
-  location            String
-  type                String
-  department   Department @relation(fields: [departmentId], references: [id])
-  equipment    Equipment  @relation(fields: [equipmentId], references: [id])
 }
 
 model Observation {

@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
 import { Trash } from "lucide-react"
-import {Audit, Department, DepartmentEquipment, Equipment} from "@prisma/client"
+import {Audit, Department, Equipment} from "@prisma/client"
 import { useParams, useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 
@@ -36,14 +36,12 @@ type DepartmentsFormValues = z.infer<typeof formSchema>
 
 interface DepartmentsFormProps {
   initialData: Department | null;
-  equipments: Equipment[];
-  department_equipments: DepartmentEquipment[] | null;
+  equipments: Equipment[] | null;
 };
 
 export const DepartmentsForm: React.FC<DepartmentsFormProps> = ({
   initialData,
   equipments,
-  department_equipments
 }) => {
 
 
@@ -58,56 +56,55 @@ export const DepartmentsForm: React.FC<DepartmentsFormProps> = ({
   const description = initialData ? 'Edit an department.' : 'Add a new department';
   const toastMessage = initialData ? 'Department updated.' : 'Department created.';
   const action = initialData ? 'Save changes' : 'Create';
+  
+  let curr_equipments: Equipment[] = [];
+
+  { equipments && equipments.forEach((equipment) => {
+    if (equipment.depId === params.departmentId) {
+      curr_equipments.push(equipment);
+    }
+  });
+}
+
+  
 
   const form = useForm<DepartmentsFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: initialData?.name || '',
-      equipments: department_equipments
-        ? department_equipments.map((deptEquip) => deptEquip.equipmentId)
-        : [],
+      equipments: []
     },
   });
   
-  
-
 
   const onSubmit = async (data: DepartmentsFormValues) => {
-    console.log(data);
-  
-    // Check if the 'equipments' field is falsy (which includes undefined), and if so, set it to an empty array
-    if (!data.equipments) {
-      data.equipments = [];
-    }
-  
-    try {
-      setLoading(true);
-  
-      // Fetch equipment details based on selected equipment IDs
-      const selectedEquipmentIds = data.equipments;
-      const selectedEquipments = selectedEquipmentIds.map((equipmentId) => {
-        return equipments.find((equipment) => equipment.id === equipmentId);
-      });
-  
-      if (initialData) {
-        // Update department with selected equipment details in the PATCH request
-        await axios.patch(`/api/${params.auditId}/departments/${params.departmentId}`, {
-          name: data.name,
-          equipments: selectedEquipments, // Include the selected equipment details
-        });
-      } else {
-        // Create department with selected equipment details in the POST request
-        await axios.post(`/api/${params.auditId}/departments`, {
-          name: data.name,
-          equipments: selectedEquipments, // Include the selected equipment details
-        });
+    try { 
+      setLoading(true); 
+      let finalEquip: String[] = []
+      if(data.equipments){
+        data.equipments.forEach((eq)=>{
+          finalEquip.push(eq)
+        })
       }
-  
+      if(curr_equipments){
+        curr_equipments.forEach((eq)=>{
+          finalEquip.push(eq.id)
+        })
+      }
+      const depData = {
+        "name" : data.name,
+        "equipments" : finalEquip ? finalEquip : []
+      }
+      if(initialData){
+        await axios.patch(`/api/${params.auditId}/departments/${params.departmentId}`, depData);
+      } else {
+        await axios.post(`/api/${params.auditId}/departments`, data);
+      }
       router.refresh();
-      router.push(`/${params.auditId}/departments`);
+      router.push(`/${params.auditId}/departments`)
       toast.success(toastMessage);
     } catch (error: any) {
-      toast.error('Department already exists');
+      toast.error('Department with this name already exists');
     } finally {
       setLoading(false);
     }
@@ -172,10 +169,10 @@ export const DepartmentsForm: React.FC<DepartmentsFormProps> = ({
   render={({ field }) => (
     <FormItem>
       <FormLabel>Equipments</FormLabel>
-      {equipments
-        .filter((equipment) => 
-          !equipment.assigned || equipment.depId === params.departmentId
-        )
+      {equipments && equipments
+      .filter((equipment) => 
+      !equipment.assigned || equipment.depId === params.departmentId
+    )
         .map((equipment) => (
           <div key={equipment.id}>
             <label>
@@ -184,15 +181,28 @@ export const DepartmentsForm: React.FC<DepartmentsFormProps> = ({
                 name="equipments"
                 value={equipment.id}
                 onChange={() => {
-                  let updatedEquipments = field.value ?? [];
+                  const updatedEquipments = field.value ?? [];
+                  const isEquipmentInCurr = curr_equipments.some(currEquipment => currEquipment.id === equipment.id);
+
                   if (updatedEquipments.includes(equipment.id)) {
-                    updatedEquipments = updatedEquipments.filter(id => id !== equipment.id);
+                    updatedEquipments.splice(updatedEquipments.indexOf(equipment.id), 1);
+
+                    if (isEquipmentInCurr) {
+                      // Remove the equipment from curr_equipments
+                      curr_equipments = curr_equipments.filter(currEquipment => currEquipment.id !== equipment.id);
+                    }
                   } else {
-                    updatedEquipments = [...updatedEquipments, equipment.id];
+                    updatedEquipments.push(equipment.id);
+
+                    if (isEquipmentInCurr) {
+                      // Add the equipment to curr_equipments
+                      curr_equipments.push(equipment);
+                    }
                   }
+
                   form.setValue("equipments", updatedEquipments);
                 }}
-                checked={(field.value ?? []).includes(equipment.id)}
+                checked={(curr_equipments.some(currEquipment => currEquipment.id === equipment.id) || (field.value ?? []).includes(equipment.id))}
               />
               {equipment.name} ({equipment.id}-{equipment.location}-{equipment.type})
             </label>
@@ -202,6 +212,9 @@ export const DepartmentsForm: React.FC<DepartmentsFormProps> = ({
     </FormItem>
   )}
 />
+
+
+
 
 
 

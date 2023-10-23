@@ -92,26 +92,10 @@ export async function GET(
         }
       }); 
   
-      // Associate equipment with the department
-      for (const equipment of equipments) {
-        await prismadb.departmentEquipment.create({
-          data: {
-            departmentId: updatedDepartment.id,
-            equipmentId: equipment.id,
-            auditId,
-            dep_name: name,
-            eq_id: equipment.id,
-            eq_name: equipment.name,
-            type: equipment.type,
-            location: equipment.location
-          },
-        });
-      }
-  
       for (const eq of equipments) {
         await prismadb.equipment.update({
           where:{
-            id: eq.id
+            id: eq
           }, 
           data:{
             assigned: true,
@@ -159,9 +143,13 @@ export async function DELETE(
         }
       }); 
   
-      const department_equipments = await prismadb.departmentEquipment.deleteMany({
+      await prismadb.equipment.updateMany({
         where:{
-          departmentId: params.departmentId
+          depId: params.departmentId
+        }, 
+        data: {
+          assigned: false,
+          depId: ""
         }
       }); 
 

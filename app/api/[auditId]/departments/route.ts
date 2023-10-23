@@ -90,31 +90,17 @@ export async function POST(
   
       // Ensure that equipments is an array of strings (equipment IDs)
       if (!Array.isArray(equipments)) {
-        return new NextResponse("Equipments should be an array of equipment IDs", { status: 400 });
+        return new NextResponse(
+          "Equipments should be an array of equipment IDs",
+          { status: 400 }
+        );
       }
-
-
   
-      // Associate equipment with the department
-      for (const equipment of equipments) {
-        await prismadb.departmentEquipment.create({
-          data: {
-            departmentId: createdDepartment.id,
-            equipmentId: equipment.id,
-            auditId,
-            dep_name: name,
-            eq_id: equipment.id,
-            eq_name: equipment.name,
-            type: equipment.type,
-            location: equipment.location
-          },
-        }); 
-      }
-
+  
       for (const eq of equipments) {
         await prismadb.equipment.update({
           where:{
-            id: eq.id
+            id: eq
           }, 
           data:{
             assigned: true,
@@ -122,7 +108,6 @@ export async function POST(
           }
         })
       }
-
       return NextResponse.json(createdDepartment);
     } catch (error) {
       console.error("[DEPARTMENTS_POST]", error);
