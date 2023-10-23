@@ -8,7 +8,7 @@ export async function GET(
     req: Request,
     { params }: { params: { referenceId: string } }
   ) {
-    try {
+    try { 
       if (!params.referenceId) {
           return new NextResponse("Reference id is required", { status: 400 });
       } 
@@ -35,7 +35,7 @@ export async function PATCH(
   try {
     const body = await req.json();
 
-    const { reference, mainRef, country } = body;
+    const { reference, mainRef, country, isMain } = body;
 
     if (!reference) {
       return new NextResponse("Reference is required", { status: 400 });
@@ -53,7 +53,8 @@ export async function PATCH(
       data: {
         reference,
         mainRef,
-        country
+        country,
+        isMain
       }
     });
   

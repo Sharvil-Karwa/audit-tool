@@ -119,6 +119,7 @@ model Reference{
     id           String     @id @default(uuid())
     mainRef String 
     reference String
+    isMain String
     country String
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt

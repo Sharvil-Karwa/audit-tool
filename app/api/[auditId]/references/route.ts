@@ -6,9 +6,9 @@ export async function POST(
     req: Request,
   { params }: { params: { auditId: string } }
 ) {
-    try{
+    try{ 
         const body = await req.json(); 
-        const {reference, mainRef, country} = body;
+        const {reference, mainRef, country, isMain} = body;
 
         if(!reference){ 
             return new NextResponse("Reference is required", {status:400});
@@ -18,7 +18,8 @@ export async function POST(
             data:{
                 reference,
                 mainRef,
-                country
+                country,
+                isMain
             }
         });
         return NextResponse.json(Reference);

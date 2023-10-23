@@ -16,7 +16,11 @@ const ReferencePage = async ({
         }
     });  
 
-    const references = await prismadb.reference.findMany()
+    const references = await prismadb.reference.findMany({
+        where:{
+            isMain: "true"
+        }
+    })
 
     return(
         <div className="flex-col">

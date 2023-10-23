@@ -70,22 +70,20 @@ export const ReferencesForm: React.FC<ReferencesFormProps> = ({
   });
 
   const onSubmit = async (data: ReferencesFormValues) => {
+    const refData = {
+      "reference": data.reference,
+      "mainRef" : main ? data.reference : data.mainRef,
+      "country" : data.country ? data.country : "",
+      "isMain" : main ? "true" : "false"
+    }
     try { 
       setLoading(true);
       if(initialData){
-
-        const refData = {
-          "reference": data.reference,
-          "mainRef" : main ? data.reference : data.mainRef,
-          "country" : data.country ? data.country : "",
-        }
-
         await axios.patch(`/api/${params.auditId}/references/${params.referenceId}`, refData);
       } else {
-        await axios.post(`/api/${params.auditId}/references`, data);
+        await axios.post(`/api/${params.auditId}/references`, refData);
       }
       router.refresh();
-      alert(main);
       router.push(`/${params.auditId}/references`)
     } catch (error: any) {
       toast.error('Fill all the fields');
@@ -166,7 +164,7 @@ export const ReferencesForm: React.FC<ReferencesFormProps> = ({
               </div>
                 
             </div>
-            {<FormField
+            {!main && <FormField
                 control={form.control}
                 name="mainRef"
                 render={({ field }) => (
