@@ -49,6 +49,11 @@ export function MainNav({
       active: pathname === `/${params.auditId}/observations`,
     },
     {
+      href: `/${params.auditId}/references`,
+      label: 'References',
+      active: pathname === `/${params.auditId}/references`,
+    },
+    {
       href: `/${params.auditId}/sources`,
       label: 'Sources',
       active: pathname === `/${params.auditId}/sources`,
