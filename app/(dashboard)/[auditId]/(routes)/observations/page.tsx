@@ -15,13 +15,19 @@ const observationsPage = async ({
         }
     })
 
-    const formattedObservations: ObservationColumn[] = observations.map((item)=>({
-        id: item.id,
-        observation: item.observation,
-        reference: item.reference,
-        createdAt: format(item.createdAt, "MMMM do, yyyy")
-    }))
-
+    const formattedObservations: ObservationColumn[] = observations.map((item) => {
+        const truncatedObservation = item.observation.length > 100
+          ? item.observation.slice(0, 150) + "..."
+          : item.observation;
+      
+        return {
+          id: item.id,
+          observation: truncatedObservation,
+          reference: item.reference,
+          createdAt: format(item.createdAt, "MMMM do, yyyy"),
+        };
+      });
+      
     return(
         <div className="flex-col">
             <div className="flex-1 space-y-4 p-8 pt-6">

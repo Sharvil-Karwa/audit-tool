@@ -21,12 +21,6 @@ export async function POST(
         if(!id){ 
             return new NextResponse("Id is required", {status:400});
         } 
-        if(!location){ 
-            return new NextResponse("Location is required", {status:400});
-        } 
-        if(!type){ 
-            return new NextResponse("Type is required", {status:400});
-        } 
         if (!auditId) {
             return new NextResponse("Audit id is required", { status: 400 });
         }
@@ -59,8 +53,8 @@ export async function POST(
         const equipment = await prismadb.equipment.create({
             data:{
                 name,
-                type,
-                location,
+                type: type ? type : "",
+                location: location ? location : "",
                 id,
                 auditId,
                 assigned,

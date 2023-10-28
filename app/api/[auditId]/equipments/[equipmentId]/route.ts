@@ -110,12 +110,6 @@ export async function DELETE(
         return new NextResponse("Equipment id is required", { status: 400 });
     } 
 
-    const department_equipment = await prismadb.departmentEquipment.deleteMany({
-      where:{
-        equipmentId: params.equipmentId
-      }
-    })
-
     const equipment = await prismadb.equipment.deleteMany({
       where: {
         id: params.equipmentId,

@@ -120,7 +120,7 @@ export const ObservationsForm: React.FC<ObservationsFormProps> = ({
       <Separator />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
-          <div className="grid grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8">
           <FormField
               control={form.control}
               name="observation"
@@ -128,7 +128,7 @@ export const ObservationsForm: React.FC<ObservationsFormProps> = ({
                 <FormItem>
                   <FormLabel>Observation</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Observation" {...field} />
+                    <Input disabled={loading} placeholder="Observation" {...field} className="h-[100px]"/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

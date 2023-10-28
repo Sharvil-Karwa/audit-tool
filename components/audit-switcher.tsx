@@ -59,7 +59,7 @@ export default function AuditSwitcher({ className, items = [] }: AuditSwitcherPr
           className={cn("w-[200px] justify-between", className)}
         >
           <Briefcase className="mr-2 h-4 w-4" />
-          {currentAudit?.label}
+          <span className="truncate max-w[100px]">{currentAudit?.label}</span>
           <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

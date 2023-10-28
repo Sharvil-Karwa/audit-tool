@@ -67,7 +67,7 @@ export const EquipmentsForm: React.FC<EquipmentsFormProps> = ({
   const onSubmit = async (data: EquipmentsFormValues) => {
     try { 
       setLoading(true);
-      if(initialData){
+      if(initialData){ 
         await axios.patch(`/api/${params.auditId}/equipments/${params.equipmentId}`, data);
       } else {
         await axios.post(`/api/${params.auditId}/equipments`, data);

@@ -34,7 +34,7 @@ export const AreaClient: React.FC<AreaClientProps> = ({
                 </Button>
             </div>
             <Separator />
-            <DataTable columns={columns} data={data} searchKey="name"/>
+            <DataTable columns={columns} data={data} searchKey="area"/>
             <Separator />
             <ApiList entityName="areas" entityIdName="areaId"/>
         </>

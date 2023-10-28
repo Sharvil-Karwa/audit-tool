@@ -31,31 +31,17 @@ export async function GET(
     { params }: { params: { auditId: string; areaId: string } }
   ) {
     try {
-      const { userId } = auth();
       const body = await req.json();
       const { area, observations } = body;
       const auditId = params.auditId;
       const areaId = params.areaId;
   
-      if (!userId) {
-        return new NextResponse("Unauthenticated", { status: 401 });
-      }
-      if (!auditId) {
-        return new NextResponse("Audit id is required", { status: 400 });
-      } 
+      
+       
       if(!area){
         return new NextResponse("Area is required", { status: 400 });
       }
   
-      const auditByCreatorId = await prismadb.audit.findFirst({
-        where: {
-          id: auditId,
-        },
-      });
-  
-      if (!auditByCreatorId) {
-        return new NextResponse("Unauthorized", { status: 403 });
-      }
   
       // Update the area's name
       const updatedArea = await prismadb.area.update({
