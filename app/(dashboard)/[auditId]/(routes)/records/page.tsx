@@ -24,7 +24,14 @@ const recordsPage = async ({
         equipment: item.equipment,
         eq_id: item.eq_id,
         rating: item.rating,
-        createdAt: format(item.createdAt, "MMMM do, yyyy")
+        createdAt: format(item.createdAt, "MMMM do, yyyy"),
+        type: item.type,
+        location: item.location,
+        area: item.area,
+        reference: item.reference,
+        comment: item.comment,
+        source: item.source,
+        observation: item.observation
     }))
 
     return(

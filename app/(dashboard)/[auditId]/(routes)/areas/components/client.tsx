@@ -20,6 +20,17 @@ export const AreaClient: React.FC<AreaClientProps> = ({
     const router = useRouter();
     const params = useParams();
 
+    const filters = [
+        {
+            label: "Area",
+            value: "area"
+        }, 
+        {
+            label: "Date",
+            value: "createdAt"
+        }
+    ]
+
 
     return(
         <>
@@ -34,7 +45,7 @@ export const AreaClient: React.FC<AreaClientProps> = ({
                 </Button>
             </div>
             <Separator />
-            <DataTable columns={columns} data={data} searchKey="area"/>
+            <DataTable columns={columns} data={data} searchKey="area" filters={filters}/>
             <Separator />
             <ApiList entityName="areas" entityIdName="areaId"/>
         </>
