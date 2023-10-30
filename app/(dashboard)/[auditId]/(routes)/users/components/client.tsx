@@ -5,15 +5,15 @@ import { Heading } from "@/components/ui/heading"
 import { Separator } from "@/components/ui/separator"
 import { Plus } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
-import { ReferenceColumn, columns } from "./coulmns"
+import { UserColumn, columns } from "./coulmns"
 import { DataTable } from "@/components/ui/data-table"
 import { ApiList } from "@/components/ui/api-list"
 
-interface ReferenceClientProps{
-    data: ReferenceColumn[]
+interface UserClientProps{
+    data: UserColumn[]
 }
 
-export const ReferenceClient: React.FC<ReferenceClientProps> = ({
+export const UserClient: React.FC<UserClientProps> = ({
     data
 }) =>{
 
@@ -22,20 +22,16 @@ export const ReferenceClient: React.FC<ReferenceClientProps> = ({
 
     const filters = [
         {
-            label : "Reference",
-            value: "reference"
-        },
-        {
-            label : "Main Reference",
-            value: "mainRef"
-        },
-        {
-            label : "Country",
-            value : "country"
+            label : "Username",
+            value : "username"
         },
         {
             label : "Date",
-            value : "createdAt"
+            value: "createdAt"
+        },
+        {
+            label: "Email",
+            value : "email"
         }
     ]
 
@@ -43,18 +39,18 @@ export const ReferenceClient: React.FC<ReferenceClientProps> = ({
         <>
             <div className="flex items-center justify-between">
                 <Heading
-                    title={`References (${data.length})` }
-                    description="Manage references for this Audit"
+                    title={`Users (${data.length})` }
+                    description="Manage users for this Audit"
                 /> 
-                <Button onClick={()=> router.push(`/${params.auditId}/references/new`)}>
+                <Button onClick={()=> router.push(`/${params.auditId}/users/new`)}>
                     <Plus className="mr-2 h-4 w-4"/>
                     Add New
                 </Button>
             </div>
             <Separator />
-            <DataTable columns={columns} data={data} searchKey="reference" filters={filters}/>
+            <DataTable columns={columns} data={data} searchKey="username" filters={filters}/>
             <Separator />
-            <ApiList entityName="references" entityIdName="referenceId"/>
+            <ApiList entityName="users" entityIdName="userId"/>
         </>
     )
 }

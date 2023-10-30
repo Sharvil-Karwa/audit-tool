@@ -13,13 +13,23 @@ interface RatingClientProps{
     data: RatingColumn[]
 }
 
+const filters = [
+    {
+        label : "Rating",
+        value : "rating"
+    },
+    {
+        label : "Id",
+        value: "id"
+    }
+]
+
 export const RatingClient: React.FC<RatingClientProps> = ({
     data
 }) =>{
 
     const router = useRouter();
     const params = useParams();
-
 
     return(
         <>
@@ -34,7 +44,7 @@ export const RatingClient: React.FC<RatingClientProps> = ({
                 </Button>
             </div>
             <Separator />
-            <DataTable columns={columns} data={data} searchKey="name"/>
+            <DataTable columns={columns} data={data} searchKey="name" filters={filters}/>
             <Separator />
             <ApiList entityName="ratings" entityIdName="ratingId"/>
         </>

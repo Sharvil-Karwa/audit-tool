@@ -20,6 +20,21 @@ export const ObservationClient: React.FC<ObservationClientProps> = ({
     const router = useRouter();
     const params = useParams();
 
+    const filters = [
+        {
+            label: "Observation",
+            value: "observation"
+        }, 
+        {
+            label: "Reference",
+            value: "reference"
+        },
+        {
+            label: "Date",
+            value: "createdAt"
+        }
+    ]
+
 
     return(
         <>
@@ -34,7 +49,7 @@ export const ObservationClient: React.FC<ObservationClientProps> = ({
                 </Button>
             </div>
             <Separator />
-            <DataTable columns={columns} data={data} searchKey="observation"/>
+            <DataTable columns={columns} data={data} searchKey="observation" filters={filters}/>
             <Separator />
             <ApiList entityName="observations" entityIdName="observationId"/>
         </>

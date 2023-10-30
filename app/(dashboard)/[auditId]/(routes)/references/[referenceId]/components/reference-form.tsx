@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
 import { Trash } from "lucide-react"
-import {Audit, Reference} from "@prisma/client"
+import {Audit, Observation, Reference} from "@prisma/client"
 import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
 
@@ -38,12 +38,14 @@ type ReferencesFormValues = z.infer<typeof formSchema>
 
 interface ReferencesFormProps {
   initialData: Reference | null;
-  references: Reference[] 
+  references: Reference[];
+  observations: Observation[];
 };
 
 export const ReferencesForm: React.FC<ReferencesFormProps> = ({
   initialData,
-  references
+  references,
+  observations
 }) => {
   const params = useParams();
   const router = useRouter();
@@ -58,7 +60,6 @@ export const ReferencesForm: React.FC<ReferencesFormProps> = ({
   const toastMessage = initialData ? 'Reference updated.' : 'Reference created.';
   const action = initialData ? 'Save changes' : 'Create';
 
-  
 
   const form = useForm<ReferencesFormValues>({
     resolver: zodResolver(formSchema),
@@ -140,6 +141,28 @@ export const ReferencesForm: React.FC<ReferencesFormProps> = ({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
           <div className="grid grid-cols-3 gap-8">
+          {!main && <FormField
+                control={form.control}
+                name="mainRef"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Main Reference</FormLabel>
+                    <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue defaultValue={field.value} placeholder="Select the main reference" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {references.map((reference) => (
+                        <SelectItem key={reference.id} value={reference.reference}>{reference.reference}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />}
             <div className="flex-col space-y-1">
                 <FormField
                 control={form.control}
@@ -168,28 +191,7 @@ export const ReferencesForm: React.FC<ReferencesFormProps> = ({
               </div>
                 
             </div>
-            {!main && <FormField
-                control={form.control}
-                name="mainRef"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Main Reference</FormLabel>
-                    <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue defaultValue={field.value} placeholder="Select the main reference" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {references.map((reference) => (
-                        <SelectItem key={reference.id} value={reference.reference}>{reference.reference}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />}
+         
               <FormField
                 control={form.control}
                 name="country"
@@ -203,6 +205,8 @@ export const ReferencesForm: React.FC<ReferencesFormProps> = ({
                   </FormItem>
                 )}
               />
+
+              {/* Add a list of checkboxes of observations whose reference is the same as mainRef that has been selected */}
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}

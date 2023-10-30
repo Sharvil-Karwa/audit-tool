@@ -6,13 +6,14 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-export type DepartmentColumn = {
+export type UserColumn = {
   id: string
-  name: string
+  username: string
+  email: string
   createdAt: string
 }
 
-export const columns: ColumnDef<DepartmentColumn>[] = [
+export const columns: ColumnDef<UserColumn>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -33,28 +34,28 @@ export const columns: ColumnDef<DepartmentColumn>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
+    accessorKey: "username",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Name
+          Username
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
     },
   },
   {
-    accessorKey: "id",
+    accessorKey: "email",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Id
+          Email
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
@@ -75,7 +76,7 @@ export const columns: ColumnDef<DepartmentColumn>[] = [
     },
   },
   {
-    id: "More",
+    id: "more",
     cell: ({row})=> <CellAction data={row.original} />
   }
 ]

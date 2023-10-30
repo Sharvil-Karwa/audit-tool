@@ -124,3 +124,13 @@ model Reference{
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
 }
+
+model User {
+  id String @id @default(uuid())
+  email String
+  username String
+  password String
+  auditId String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

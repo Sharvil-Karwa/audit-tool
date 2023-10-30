@@ -13,6 +13,17 @@ interface DepartmentClientProps{
     data: DepartmentColumn[]
 }
 
+const filters = [
+    {
+        label: "Department",
+        value: "name"
+    }, 
+    {
+        label: "Date",
+        value: "createdAt"
+    }
+]
+
 export const DepartmentClient: React.FC<DepartmentClientProps> = ({
     data
 }) =>{
@@ -34,7 +45,7 @@ export const DepartmentClient: React.FC<DepartmentClientProps> = ({
                 </Button>
             </div>
             <Separator />
-            <DataTable columns={columns} data={data} searchKey="name"/>
+            <DataTable columns={columns} data={data} searchKey="name" filters={filters}/>
             <Separator />
             <ApiList entityName="departments" entityIdName="departmentId"/>
         </>

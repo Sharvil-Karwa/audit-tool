@@ -63,7 +63,7 @@ export const columns: ColumnDef<AreaColumn>[] = [
     },
   },
   {
-    id: "actions",
+    id: "more",
     cell: ({row})=> <CellAction data={row.original} />
   }
 ]

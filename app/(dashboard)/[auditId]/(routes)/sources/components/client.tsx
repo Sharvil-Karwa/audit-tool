@@ -20,6 +20,20 @@ export const SourceClient: React.FC<SourceClientProps> = ({
     const router = useRouter();
     const params = useParams();
 
+    const filters = [
+        {
+            label : "Source",
+            value : "source"
+        },
+        {
+            label : "Date",
+            value: "createdAt"
+        },
+        {
+            label: "Id",
+            value : "id"
+        }
+    ]
 
     return(
         <>
@@ -34,7 +48,7 @@ export const SourceClient: React.FC<SourceClientProps> = ({
                 </Button>
             </div>
             <Separator />
-            <DataTable columns={columns} data={data} searchKey="name"/>
+            <DataTable columns={columns} data={data} searchKey="name" filters={filters}/>
             <Separator />
             <ApiList entityName="sources" entityIdName="sourceId"/>
         </>

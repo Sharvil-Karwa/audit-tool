@@ -16,10 +16,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AlertModal } from "@/components/modals/alert-modal";
 
-import { ReferenceColumn } from "./coulmns";
+import { UserColumn } from "./coulmns";
 
 interface CellActionProps {
-  data: ReferenceColumn;
+  data: UserColumn;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({
@@ -33,8 +33,8 @@ export const CellAction: React.FC<CellActionProps> = ({
   const onConfirm = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${params.auditId}/references/${data.id}`);
-      toast.success('Reference deleted.');
+      await axios.delete(`/api/${params.auditId}/users/${data.id}`);
+      toast.success('User deleted.');
       router.refresh();
     } catch (error) {
       toast.error('Something went wrong');
@@ -46,7 +46,7 @@ export const CellAction: React.FC<CellActionProps> = ({
 
   const onCopy = (id: string) => {
     navigator.clipboard.writeText(id);
-    toast.success('Reference ID copied to clipboard.');
+    toast.success('User ID copied to clipboard.');
   }
 
   return (
@@ -59,7 +59,7 @@ export const CellAction: React.FC<CellActionProps> = ({
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button className="mx-2">
+          <Button  className="mx-2">
             More
           </Button>
         </DropdownMenuTrigger>
@@ -71,7 +71,7 @@ export const CellAction: React.FC<CellActionProps> = ({
             <Copy className="mr-2 h-4 w-4" /> Copy Id
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => router.push(`/${params.auditId}/references/${data.id}`)}
+            onClick={() => router.push(`/${params.auditId}/users/${data.id}`)}
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>

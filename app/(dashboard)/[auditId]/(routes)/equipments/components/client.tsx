@@ -13,6 +13,30 @@ interface EquipmentClientProps{
     data: EquipmentColumn[]
 }
 
+const filters = [
+    {
+        label: "Equipment",
+        value: "name"
+    }, 
+    {
+        label: "Type",
+        value: "type"
+    },
+    {
+        label: "Id",
+        value: "id"
+    },
+    {
+        label: "Location",
+        value: "location"
+    },
+    {
+        label: "Date",
+        value: "createdAt"
+    },
+]
+
+
 export const EquipmentClient: React.FC<EquipmentClientProps> = ({
     data
 }) =>{
@@ -34,7 +58,7 @@ export const EquipmentClient: React.FC<EquipmentClientProps> = ({
                 </Button>
             </div>
             <Separator />
-            <DataTable columns={columns} data={data} searchKey="name"/>
+            <DataTable columns={columns} data={data} searchKey="name" filters={filters}/>
             <Separator />
             <ApiList entityName="equipments" entityIdName="equipmentId"/>
         </>
