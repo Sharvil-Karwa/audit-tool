@@ -11,30 +11,32 @@ export async function POST(
         const {observation, reference} = body;
         const auditId = params.auditId; 
 
-       
         if (!auditId) {
             return new NextResponse("Audit id is required", { status: 400 });
         }
-
         
-        const observationId = await prismadb.observation.findFirst({
-            where:{
-                observation: observation,
-                reference: reference
-            }
-        }) 
-
-        if(observationId){
-            return new NextResponse("This observation, along with the given reference number, already exists", { status: 400 });
-        }
-
         const Observation = await prismadb.observation.create({
             data:{
                 observation,
-                reference,
-                auditId
+                reference: reference,
+                auditId,
             }
-        });
+        }); 
+
+        const ref = await prismadb.reference.findFirst({
+            where:{
+                mainRef: reference
+            }
+        })
+
+          if(ref) { await prismadb.obsRef.create({
+              data:{
+                  obsId: Observation.id,
+                  refId: ref?.id
+              }
+            })
+        }
+        
         return NextResponse.json(Observation);
     } catch (error){
         console.log('[OBSERVATIONS_POST]', error);

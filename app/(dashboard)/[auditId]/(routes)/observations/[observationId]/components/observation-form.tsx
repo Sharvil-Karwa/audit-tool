@@ -26,6 +26,7 @@ import { AlertModal } from "@/components/modals/alert-modal"
 import { useOrigin } from "@/hooks/use-origin"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import prismadb from "@/lib/prismadb"
 
 
 const formSchema = z.object({
@@ -67,17 +68,23 @@ export const ObservationsForm: React.FC<ObservationsFormProps> = ({
 
   const onSubmit = async (data: ObservationsFormValues) => {
     try { 
-      setLoading(true);
+      setLoading(true);      
+      const obsData = {
+        "observation" : data.observation,
+        "reference" : data.reference
+      } 
+      console.log(obsData)
       if(initialData){
-        await axios.patch(`/api/${params.auditId}/observations/${params.observationId}`, data);
+        await axios.patch(`/api/${params.auditId}/observations/${params.observationId}`, obsData);
       } else {
-        await axios.post(`/api/${params.auditId}/observations`, data);
+        await axios.post(`/api/${params.auditId}/observations`, obsData);
       }
       router.refresh();
       router.push(`/${params.auditId}/observations`)
       toast.success(toastMessage);
     } catch (error: any) {
       toast.error('Observation already exists');
+      console.log(error)
     } finally {
       setLoading(false);
     }
@@ -134,7 +141,7 @@ export const ObservationsForm: React.FC<ObservationsFormProps> = ({
                 </FormItem>
               )}
             />
-            <FormField
+             <FormField
               control={form.control}
               name="reference"
               render={({ field }) => (

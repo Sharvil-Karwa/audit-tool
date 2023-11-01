@@ -47,8 +47,8 @@ model Equipment {
 model Observation {
   id                  String                @id @default(uuid())
   observation         String
-  reference           String
   auditId             String
+  reference String
   audit               Audit                 @relation("AuditToObservation", fields: [auditId], references: [id])
   areas               Area[]                @relation("AreaToObservation")
   AreaObservation     AreaObservation[]
@@ -74,7 +74,6 @@ model AreaObservation {
   areaId  String
   auditId String 
   obs String
-  reference String
   area_name String
   observation Observation @relation(fields: [observationId], references: [id])
   area Area  @relation(fields: [areaId], references: [id])
@@ -133,4 +132,10 @@ model User {
   auditId String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+} 
+
+model ObsRef {
+  id String @id @default(uuid())
+  obsId String
+  refId String
 }

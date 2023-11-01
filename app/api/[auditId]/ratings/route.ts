@@ -33,6 +33,16 @@ export async function POST(
             return new NextResponse("Unauthorized", {status:403});
         } 
 
+        const rat = await prismadb.rating.findFirst({
+            where:{
+                rating: rating
+            }
+        }) 
+
+        if(rat){
+            return new NextResponse("Rating already exists", {status:400});
+        }
+
         const Rating = await prismadb.rating.create({
             data:{
                 rating,

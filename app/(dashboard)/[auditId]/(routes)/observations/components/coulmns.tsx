@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button"
 export type ObservationColumn = {
   id: string
   observation: string
-  createdAt: string
   reference: string
+  createdAt: string
 }
 
 export const columns: ColumnDef<ObservationColumn>[] = [

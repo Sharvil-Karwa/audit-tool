@@ -12,13 +12,11 @@ export async function GET(
       if (!params.observationId) {
           return new NextResponse("Observation id is required", { status: 400 });
       } 
-  
       const observation = await prismadb.observation.findUnique({
         where: {
           id: params.observationId,
         }
       });
-    
       return NextResponse.json(observation);
     } catch (error) {
       console.log('[OBSERVATION_GET]', error);
@@ -36,7 +34,7 @@ export async function PATCH(
     const { userId } = auth();
     const body = await req.json();
 
-    const { observation, reference, id } = body;
+    const { observation, reference } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -67,9 +65,29 @@ export async function PATCH(
       },
       data: {
         observation,
-        reference
+        reference: reference
       }
     });
+
+    await prismadb.obsRef.deleteMany({
+      where:{
+        obsId: params.observationId
+      }
+    })
+    
+    const ref = await prismadb.reference.findFirst({
+      where:{
+          mainRef: reference
+      }
+  })
+
+    if(ref) { await prismadb.obsRef.create({
+        data:{
+            obsId: params.observationId,
+            refId: ref?.id
+        }
+      })
+  }
   
     return NextResponse.json(Observation);
   } catch (error) {
@@ -98,9 +116,15 @@ export async function DELETE(
         return new NextResponse("Observation id is required", { status: 400 });
     } 
 
-    const area_observation = await prismadb.areaObservation.deleteMany({
+    await prismadb.areaObservation.deleteMany({
       where:{
         observationId: params.observationId
+      }
+    })
+
+    await prismadb.obsRef.deleteMany({
+      where:{
+        obsId: params.observationId
       }
     })
 

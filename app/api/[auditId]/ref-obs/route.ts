@@ -12,11 +12,11 @@ export async function GET(
             return new NextResponse("Audit id is required", { status: 400 });
         }
 
-        const area_observations = await prismadb.areaObservation.findMany();
+        const ref_obs = await prismadb.obsRef.findMany();
 
-        return NextResponse.json(area_observations);
+        return NextResponse.json(ref_obs);
     } catch (error){
-        console.log('[AREA_OBSERVATIONS_GET]', error);
+        console.log('[REFERENCES_OBSERVATIONS_GET]', error);
         return new NextResponse ("Internal error", {status:500});
     }
 }
@@ -26,25 +26,17 @@ export async function POST(
 ) {
     try{
         const body = await req.json();
-        const {areaId,
-            observationId,
-            auditId,
-            area_name,
-            obs,
-            reference} = body;
+        const {refId, obsId} = body;
 
-        await prismadb.areaObservation.create({
+        await prismadb.obsRef.create({
             data: {
-                areaId,
-                observationId,
-                auditId,
-                area_name,
-                obs,
+                obsId,
+                refId
             },
           });
 
     } catch (error){
-        console.log('[AREA_OBSERVATIONS_POST]', error);
+        console.log('[REFERENCES_OBSERVATIONS_POST]', error);
         return new NextResponse ("Internal error", {status:500});
     }
 }

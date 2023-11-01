@@ -8,7 +8,7 @@ export async function POST(
 ) {
     try{ 
         const body = await req.json(); 
-        const {reference, mainRef, country, isMain} = body;
+        const {reference, mainRef, country, isMain, observations} = body;
 
         if(!reference){ 
             return new NextResponse("Reference is required", {status:400});
@@ -22,6 +22,16 @@ export async function POST(
                 isMain
             }
         });
+
+        for(const obs of observations){
+            await prismadb.obsRef.create({
+              data:{
+                  obsId: obs,
+                  refId: Reference.id
+              }
+            })
+        }
+        
         return NextResponse.json(Reference);
     } catch (error){
         console.log('[REFERENCES_POST]', error);

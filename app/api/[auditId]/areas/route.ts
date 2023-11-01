@@ -96,7 +96,6 @@ export async function POST(
             auditId,
             area_name: createdArea.area,
             obs: observationId.observation,
-            reference: observationId.reference
           },
         });
       }

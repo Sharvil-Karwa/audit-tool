@@ -35,7 +35,7 @@ export async function PATCH(
   try {
     const body = await req.json();
 
-    const { reference, mainRef, country, isMain } = body;
+    const { reference, mainRef, country, isMain, observations } = body;
 
     if (!reference) {
       return new NextResponse("Reference is required", { status: 400 });
@@ -57,6 +57,21 @@ export async function PATCH(
         isMain
       }
     });
+
+    await prismadb.obsRef.deleteMany({
+      where: {
+        refId: params.referenceId
+      }
+    })
+
+    for(const obs of observations){
+      await prismadb.obsRef.create({
+        data:{
+            obsId: obs,
+            refId: params.referenceId
+        }
+      })
+  }
   
     return NextResponse.json(Reference);
   } catch (error) {
@@ -88,6 +103,12 @@ export async function DELETE(
         id: params.referenceId,
       }
     });
+
+    await prismadb.obsRef.deleteMany({
+      where: {
+        refId: params.referenceId
+      }
+    })
   
     return NextResponse.json(reference);
   } catch (error) {

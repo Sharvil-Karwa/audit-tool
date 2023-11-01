@@ -73,7 +73,6 @@ export const AreasForm: React.FC<AreasFormProps> = ({
 
 
   const onSubmit = async (data: AreasFormValues) => {
-    console.log(data);
   
     // Check if the 'observations' field is falsy (which includes undefined), and if so, set it to an empty array
     if (!data.observations) {
@@ -167,7 +166,7 @@ export const AreasForm: React.FC<AreasFormProps> = ({
               )}
             />
           <FormField 
-  control={form.control}
+  control={form.control} 
   name="observations"
   render={({ field }) => (
     <FormItem>
@@ -187,7 +186,7 @@ export const AreasForm: React.FC<AreasFormProps> = ({
               }}
               checked={(field.value ?? []).includes(observation.id)}
             />
-            {observation.observation} <span className="font-bold">{observation.reference}</span>
+            {observation.observation} 
           </label>
         </div>
       ))}
