@@ -5,7 +5,7 @@ import prismadb from "@/lib/prismadb";
 
 export async function GET(
     req: Request,
-    { params }: { params: { userId: string } }
+    { params }: { params: { userId: string, auditId: string} }
   ) {
     try {
       if (!params.userId) {
@@ -15,6 +15,7 @@ export async function GET(
       const user = await prismadb.user.findUnique({
         where: {
           id: params.userId,
+          auditId: params.auditId
         }
       });
     
@@ -34,21 +35,21 @@ export async function PATCH(
   try {
     const {userId} = auth(); 
         const body = await req.json(); 
-        const {email, username, password} = body;
+        const {email} = body;
         const auditId = params.auditId; 
 
         if(!userId){ 
             return new NextResponse("Unauthenticated", {status:401});
         }
-        if(!username){ 
-            return new NextResponse("Username is required", {status:400});
-        } 
+        // if(!username){ 
+        //     return new NextResponse("Username is required", {status:400});
+        // } 
         if(!email){ 
             return new NextResponse("Email is required", {status:400});
         } 
-        if (!password) {
-            return new NextResponse("Password is required", { status: 400 });
-        }
+        // if (!password) {
+        //     return new NextResponse("Password is required", { status: 400 });
+        // }
 
         const auditByCreatorId = await prismadb.audit.findFirst({
             where:{
@@ -66,9 +67,9 @@ export async function PATCH(
             id: params.userId,
         },
         data: {
-            username,
+            // username,
             email,
-            password
+            // password
         }
         });
   
@@ -98,6 +99,14 @@ export async function DELETE(
     if (!params.userId) {
         return new NextResponse("User id is required", { status: 400 });
     } 
+
+
+    await prismadb.userAudit.deleteMany({
+      where:{
+        id: userId,
+        auditId: params.auditId
+      }
+    })
 
     const user = await prismadb.user.deleteMany({
       where: {

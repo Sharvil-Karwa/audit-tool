@@ -29,9 +29,11 @@ const recordsPage = async ({
         location: item.location,
         area: item.area,
         reference: item.reference,
+        refCountry: item.refCountry,
         comment: item.comment,
         source: item.source,
-        observation: item.observation
+        observation: item.observation,
+        user: item.user
     }))
 
     return(

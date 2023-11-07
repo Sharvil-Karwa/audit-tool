@@ -13,6 +13,16 @@ export async function POST(
         if(!reference){ 
             return new NextResponse("Reference is required", {status:400});
         } 
+
+        const existing = await prismadb.reference.findFirst({
+            where: {
+                reference: reference
+            }
+        }) 
+
+        if(existing){
+        return NextResponse.json(existing)
+        }
         
         const Reference = await prismadb.reference.create({
             data:{
@@ -27,7 +37,9 @@ export async function POST(
             await prismadb.obsRef.create({
               data:{
                   obsId: obs,
-                  refId: Reference.id
+                  refId: Reference.id,
+                  reference: Reference.reference,
+                  country: Reference.country
               }
             })
         }

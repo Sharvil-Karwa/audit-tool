@@ -87,6 +87,19 @@ export async function DELETE(
       return new NextResponse("Audit id is required", { status: 400 });
     }
 
+    await prismadb.department.deleteMany({
+      where: {
+        auditId: params.auditId
+      }
+    })
+
+    
+    await prismadb.equipment.deleteMany({
+      where: {
+        auditId: params.auditId
+      }
+    })
+
     const audit = await prismadb.audit.deleteMany({
       where: {
         id: params.auditId,

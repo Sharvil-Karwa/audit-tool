@@ -106,6 +106,7 @@ model Record {
   location    String
   area        String
   reference   String
+  refCountry String
   comment     String
   rating      String
   source      String
@@ -136,6 +137,15 @@ model User {
 
 model ObsRef {
   id String @id @default(uuid())
+  reference String
+  country String
   obsId String
   refId String
+}
+
+model userAudit{
+  id String @id @default(uuid())
+  email String
+  auditId String
+  name String
 }

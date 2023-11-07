@@ -58,6 +58,14 @@ export async function PATCH(
       }
     });
 
+    const ref = await prismadb.reference.findFirst({
+      where:{
+        id: params.referenceId
+      }
+    }) 
+
+    if(!ref) return new NextResponse("Reference is required", { status: 400 });
+
     await prismadb.obsRef.deleteMany({
       where: {
         refId: params.referenceId
@@ -68,7 +76,9 @@ export async function PATCH(
       await prismadb.obsRef.create({
         data:{
             obsId: obs,
-            refId: params.referenceId
+            refId: params.referenceId,
+            reference: ref.reference,
+            country: ref.country
         }
       })
   }

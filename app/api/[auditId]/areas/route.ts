@@ -63,13 +63,8 @@ export async function POST(
       });
   
       if (existingArea) {
-        return new NextResponse(
-          "Area with this name already exists for this audit",
-          { status: 400 }
-        );
+        return NextResponse.json(existingArea)
       }
-
-
   
       const createdArea = await prismadb.area.create({
         data: {

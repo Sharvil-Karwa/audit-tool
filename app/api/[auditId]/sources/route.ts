@@ -16,7 +16,13 @@ export async function POST(
             return new NextResponse("Source is required", {status:400});
         } 
         
+        const src = await prismadb.source.findFirst({
+            where:{
+                source
+            }
+        }) 
 
+        if(src) return NextResponse.json(src)
         
 
         const Source = await prismadb.source.create({

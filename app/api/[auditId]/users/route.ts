@@ -9,21 +9,21 @@ export async function POST(
     try{
         const {userId} = auth(); 
         const body = await req.json(); 
-        const {email, username, password} = body;
+        const {email} = body;
         const auditId = params.auditId; 
 
         if(!userId){ 
             return new NextResponse("Unauthenticated", {status:401});
         }
-        if(!username){ 
-            return new NextResponse("Username is required", {status:400});
-        } 
+        // if(!username){ 
+        //     return new NextResponse("Username is required", {status:400});
+        // } 
         if(!email){ 
             return new NextResponse("Email is required", {status:400});
         } 
-        if (!password) {
-            return new NextResponse("Password is required", { status: 400 });
-        }
+        // if (!password) {
+        //     return new NextResponse("Password is required", { status: 400 });
+        // }
 
         const auditByCreatorId = await prismadb.audit.findFirst({
             where:{
@@ -49,12 +49,21 @@ export async function POST(
 
         const user = await prismadb.user.create({
             data:{
-                username,
+                username: "",
                 email,
-                password,
+                password: "",
                 auditId: params.auditId
             }
         });
+
+        await prismadb.userAudit.create({
+            data:{
+                email: email,
+                auditId: params.auditId,
+                name: auditByCreatorId.name
+            }
+        })
+
         return NextResponse.json(user);
     } catch (error){
         console.log('[EQUIPMENTS_POST]', error);

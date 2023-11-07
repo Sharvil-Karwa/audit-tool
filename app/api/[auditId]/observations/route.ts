@@ -15,6 +15,16 @@ export async function POST(
             return new NextResponse("Audit id is required", { status: 400 });
         }
         
+        const currObs = await prismadb.observation.findFirst({
+            where: {
+                observation: observation
+            }
+        }) 
+
+        if(currObs){
+            return NextResponse.json(currObs)
+        }
+
         const Observation = await prismadb.observation.create({
             data:{
                 observation,
@@ -32,7 +42,9 @@ export async function POST(
           if(ref) { await prismadb.obsRef.create({
               data:{
                   obsId: Observation.id,
-                  refId: ref?.id
+                  refId: ref?.id,
+                  reference: ref.reference,
+                  country: ref.country
               }
             })
         }

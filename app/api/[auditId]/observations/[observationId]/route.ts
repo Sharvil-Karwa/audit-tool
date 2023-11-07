@@ -84,7 +84,9 @@ export async function PATCH(
     if(ref) { await prismadb.obsRef.create({
         data:{
             obsId: params.observationId,
-            refId: ref?.id
+            refId: ref?.id,
+            reference: ref?.reference,
+            country: ref?.country
         }
       })
   }

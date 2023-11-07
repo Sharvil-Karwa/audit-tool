@@ -10,6 +10,9 @@ const usersPage = async ({
 }) => {
 
     const users = await prismadb.user.findMany({
+        where:{
+            auditId: params.auditId,
+        },
         orderBy:{
             createdAt: 'desc'
         }

@@ -49,12 +49,13 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [uploadedData1, setUploadedData1] = useState<any>(null);
   const [uploadedData2, setUploadedData2] = useState<any>(null);
   const [uploadedData3, setUploadedData3] = useState<any>(null);
   const [uploadedData4, setUploadedData4] = useState<any>(null);
-
-
+  const [uploadedData5, setUploadedData5] = useState<any>(null);
+  const [uploadedData6, setUploadedData6] = useState<any>(null);
 
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(formSchema),
@@ -62,34 +63,21 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
   });
 
   const downloadTemplate = () => {
-    const DepartmentData = [
-      ["department"]
+    const DepEquipmentData = [
+      ["department","equipment", "equip-id", "type", "location"],
     ];
 
-    const EquipmentData = [
-      ["equip_id", "equipment", "type", "location"],
-    ];
-
-    const ratingData = [
-      ["rating"],
-    ]; 
-
-    const depEquipData = [
-      ["department", "eq_id"],
-    ]; 
+    const users = [
+      ["username", "email", "password"]
+    ]
 
     const wb = XLSX.utils.book_new();
-    const departmentWS = XLSX.utils.aoa_to_sheet(DepartmentData);
-    const equipmentWS = XLSX.utils.aoa_to_sheet(EquipmentData);
-    const ratingWS = XLSX.utils.aoa_to_sheet(ratingData);
-    const depEqWS = XLSX.utils.aoa_to_sheet(depEquipData);
+    const deWS = XLSX.utils.aoa_to_sheet(DepEquipmentData);
+    const userWS = XLSX.utils.aoa_to_sheet(users);
 
-    XLSX.utils.book_append_sheet(wb, departmentWS, "Sheet1");
-    XLSX.utils.book_append_sheet(wb, equipmentWS, "Sheet2");
-    XLSX.utils.book_append_sheet(wb, ratingWS, "Sheet3");
-    XLSX.utils.book_append_sheet(wb, depEqWS, "Sheet4");
+    XLSX.utils.book_append_sheet(wb, deWS, "Equip");
+    XLSX.utils.book_append_sheet(wb, userWS, "Users");
 
-    // Create a blob and trigger the download
     XLSX.writeFile(wb, "audit_template.xlsx");
   };
 
@@ -121,7 +109,9 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
     }
   };
 
-  const onDrop = async (acceptedFiles: File[]) => {
+  const onDrop = async (acceptedFiles: File[]) => { 
+
+
     if (acceptedFiles.length === 0) {
       toast.error("Invalid file. Please upload a valid Excel file.");
       return;
@@ -131,6 +121,8 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
     const reader = new FileReader();
   
     reader.onload = async (event) => {
+
+      setUploading(true);
       const data = event.target?.result as ArrayBuffer;
   
       const workbook = XLSX.read(data, { type: "array" });
@@ -138,43 +130,24 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
       const sheet1 = workbook.Sheets[sheetName1];
       const sheetName2= workbook.SheetNames[1];
       const sheet2 = workbook.Sheets[sheetName2];
-      const sheetName3= workbook.SheetNames[2];
-      const sheet3 = workbook.Sheets[sheetName3];
-      const sheetName4= workbook.SheetNames[3];
-      const sheet4 = workbook.Sheets[sheetName4];
+      
       const sheetData1: string[][] = XLSX.utils.sheet_to_json(sheet1, { header: 1 });
       const sheetData2: string[][] = XLSX.utils.sheet_to_json(sheet2, { header: 1 });
-      const sheetData3: string[][] = XLSX.utils.sheet_to_json(sheet3, { header: 1 });
-      const sheetData4: string[][] = XLSX.utils.sheet_to_json(sheet4, { header: 1 });
-  
       setUploadedData1(sheetData1);
       setUploadedData2(sheetData2);
-      setUploadedData3(sheetData3);
-      setUploadedData4(sheetData4);
 
-
-  
       // Extract unique department names
       const departmentColumn = sheetData1.map((row) => row[0]);
-      const equipmentIdColumn = sheetData2.map((row) => row[0]);
-      const equipmentColumn = sheetData2.map((row) => row[1]);
-      const typeColumn = sheetData2.map((row) => row[2]);
-      const locationColumn = sheetData2.map((row) => row[3]);
-      const ratingColumn = sheetData3.map((row) => row[0]);
-      const depCol = sheetData4.map((row)=>row[0]);
-      const eqidCol = sheetData4.map((row)=>row[1]);
+      const equipmentColumn = sheetData1.map((row) => row[1]);
+      const equipidColumn = sheetData1.map((row) => row[2]);
+      const typeColumn = sheetData1.map((row) => row[3]);
+      const locationColumn = sheetData1.map((row) => row[4]);
+
+      const usernameCol = sheetData2.map((row)=>row[0]);
+      const emailCol = sheetData2.map((row)=>row[1]);
+      const passwordCol = sheetData2.map((row)=>row[2]);
 
       const uniqueDepartments = Array.from(new Set(departmentColumn));
-      const uniqueRatings = Array.from(new Set(ratingColumn));
-
-  
-      // Log unique departments
-      console.log("Unique Departments:", uniqueDepartments);
-      console.log("Unique Departments:", equipmentColumn);
-      console.log("Unique Departments:", typeColumn);
-      console.log("Unique Departments:", locationColumn);
-      console.log("Unique Departments:", equipmentIdColumn);
-      
   
       // Create departments in the database
       for (const dep of uniqueDepartments.slice(1)) {
@@ -186,55 +159,56 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
           });
         } catch (error) {
           console.error(`Error creating department "${dep}":`, error);
-          // Optionally, you can continue the loop here without breaking:
           continue;
         }
       }
 
-      for (const rating of uniqueRatings.slice(1)) {
-        try {
-          await axios.post(`/api/${params.auditId}/ratings`, {
-            "rating": rating
-          });
-        } catch (error) {
-          console.error(`Error creating rating "${rating}":`, error);
-          // Optionally, you can continue the loop here without breaking:
-          continue;
-        }
-      }
 
-      for(let i=1;i<equipmentIdColumn.length;i++){
+      for(let i=1;i<equipidColumn.length;i++){
         try {
           await axios.post(`/api/${params.auditId}/equipments`, {
             "name" : equipmentColumn[i],
             "type" : typeColumn[i] ? typeColumn[i] : "",
             "location": locationColumn[i] ? locationColumn[i]: "",
-            "id" : equipmentIdColumn[i],
+            "id" : equipidColumn[i],
           });
         } catch (error) {
-          console.error(`Error creating equipment of id "${equipmentIdColumn[i]}":`, error);
+          console.error(`Error creating equipment of id "${equipidColumn[i]}":`, error);
           continue;
         }
       }
 
-      for(let i=1;i<depCol.length;i++){
+      for(let i=1;i<departmentColumn.length;i++){
         try{
           await axios.post(`/api/${params.auditId}/depeq`,{
-            "name": depCol[i],
-            "equipmentId": eqidCol[i]
+            "name": departmentColumn[i],
+            "equipmentId": equipidColumn[i]
+          }) 
+        } 
+        catch(error){
+          continue;
+        }
+      }   
+      
+      for(let i=1;i<usernameCol.length;i++){
+        try{
+          await axios.post(`/api/${params.auditId}/users`,{
+            "username" :  usernameCol[i],
+            "email" : emailCol[i],
+            "password": passwordCol[i]
           }) 
         } 
         catch(error){
           continue;
         }
       }
+
+    setUploading(false);
+    toast.success("Uploaded Data")
     };
-  
+
     reader.readAsArrayBuffer(file);
-  };
-  
-  
-  
+  };  
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -249,8 +223,9 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
         loading={loading}
       />
       <div className="flex items-center justify-between">
-        <Heading title="Audit settings" description="Manage audit preferences" />
-        <div className="flex-col space-y-2">
+        
+        {!uploading && <Heading title="Audit settings" description="Manage audit preferences" />}
+        {!uploading && <div className="flex-col space-y-2">
         <Button
           disabled={loading}
           size="sm"
@@ -266,16 +241,26 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
             <Table className="mr-2"/> Upload Excel
           </Button>
         </div>
-        </div>
+        </div>}
+        {
+          uploading && (
+            <div className="text-red-500 animate-pulse text-5xl mx-auto">
+              UPLOADING DATA...
+            </div>
+          )
+        }
+        {
+          !uploading && 
 
-        <Button
-          disabled={loading}
-          variant="destructive"
-          size="sm"
-          onClick={() => setOpen(true)}
-        >
-          <Trash className="h-4 w-4" />
-        </Button>
+          <Button
+            disabled={loading}
+            variant="destructive"
+            size="sm"
+            onClick={() => setOpen(true)}
+          >
+            <Trash className="h-4 w-4" />
+          </Button>
+        }
       </div>
       <Separator />
       <Form {...form}>

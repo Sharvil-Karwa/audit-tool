@@ -33,9 +33,11 @@ export const RecordsForm: React.FC<RecordsFormProps> = ({ initialData }) => {
     reference,
     comment,
     rating,
+    refCountry,
     source,
     observation,
     createdAt,
+    user
   } = initialData;
 
   const date = format(createdAt, "MMMM do, yyyy")
@@ -51,6 +53,10 @@ export const RecordsForm: React.FC<RecordsFormProps> = ({ initialData }) => {
                 </TableRow>
             </TableHeader>
             <TableBody>
+            <TableRow>
+                <TableCell className="font-medium">User</TableCell>
+                <TableCell className="text-right">{user}</TableCell>
+            </TableRow>
             <TableRow>
                 <TableCell className="font-medium">Department</TableCell>
                 <TableCell className="text-right">{department}</TableCell>
@@ -78,6 +84,10 @@ export const RecordsForm: React.FC<RecordsFormProps> = ({ initialData }) => {
             <TableRow>
                 <TableCell className="font-medium">Reference</TableCell>
                 <TableCell className="text-right">{reference}</TableCell>
+            </TableRow>
+            <TableRow>
+                <TableCell className="font-medium">Reference Country</TableCell>
+                <TableCell className="text-right">{refCountry}</TableCell>
             </TableRow>
             <TableRow>
                 <TableCell className="font-medium">Observation</TableCell>

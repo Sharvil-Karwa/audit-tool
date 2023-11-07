@@ -19,9 +19,11 @@ export type RecordColumn = {
   location: string 
   area: string
   reference: string
+  refCountry: string
   comment: string
   source: string
   observation: string
+  user: string
 }
 
 export const columns: ColumnDef<RecordColumn>[] = [
@@ -53,6 +55,20 @@ export const columns: ColumnDef<RecordColumn>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Id
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "user",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          User
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
@@ -165,6 +181,20 @@ export const columns: ColumnDef<RecordColumn>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Reference
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "refCountry",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Reference Country
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )

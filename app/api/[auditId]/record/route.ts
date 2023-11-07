@@ -31,7 +31,8 @@ export async function POST(
             comment ,
             rating ,
             source ,
-            observation
+            observation,
+            refCountry
         } = body;
 
         const Record = await prismadb.record.create({
@@ -48,7 +49,8 @@ export async function POST(
             comment ,
             rating ,
             source,
-            observation
+            observation,
+            refCountry
             }
         });
         return NextResponse.json( {

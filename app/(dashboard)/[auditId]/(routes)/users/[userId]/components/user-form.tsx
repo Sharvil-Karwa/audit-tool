@@ -26,9 +26,9 @@ import { AlertModal } from "@/components/modals/alert-modal"
 import { useOrigin } from "@/hooks/use-origin"
 
 const formSchema = z.object({
-  username: z.string().min(1),
+  // username: z.string().min(1),
   email: z.string().min(1),
-  password: z.string().min(1),
+  // password: z.string().min(1),
 });
 
 type UsersFormValues = z.infer<typeof formSchema>
@@ -56,9 +56,9 @@ export const UsersForm: React.FC<UsersFormProps> = ({
   const form = useForm<UsersFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-        username: '',
+        // username: '',
         email: '',
-        password: '',
+        // password: '',
     }
   });
 
@@ -118,7 +118,7 @@ export const UsersForm: React.FC<UsersFormProps> = ({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
           <div className="grid grid-cols-3 gap-8">
-          <FormField
+          {/* <FormField
               control={form.control}
               name="username"
               render={({ field }) => (
@@ -130,7 +130,7 @@ export const UsersForm: React.FC<UsersFormProps> = ({
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
             <FormField
               control={form.control}
               name="email"
@@ -144,7 +144,7 @@ export const UsersForm: React.FC<UsersFormProps> = ({
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={form.control}
               name="password"
               render={({ field }) => (
@@ -156,7 +156,7 @@ export const UsersForm: React.FC<UsersFormProps> = ({
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}

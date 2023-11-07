@@ -39,12 +39,11 @@ export async function POST(
         const equipmentId = await prismadb.equipment.findFirst({
             where:{
                 id:id,
-                auditId: params.auditId
             }
         }) 
 
         if(equipmentId){
-            return new NextResponse("Equipment with this ID already exists", { status: 400 });
+            return new NextResponse("Equipment already exists", { status: 400 });
         } 
 
         const assigned = false;

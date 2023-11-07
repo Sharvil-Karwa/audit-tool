@@ -71,10 +71,7 @@ export async function POST(
       });
   
       if (existingDepartment) {
-        return new NextResponse(
-          "Department with this name already exists for this audit",
-          { status: 400 }
-        );
+        return NextResponse.json(existingDepartment)
       }
 
 

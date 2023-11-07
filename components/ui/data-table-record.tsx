@@ -96,6 +96,10 @@ const filters = [
       value: "reference"
     },
     {
+      label: "Reference Country",
+      value: "refCountry"
+    },
+    {
       label : "Comment",
       value: "comment"
     },
@@ -175,6 +179,7 @@ export function DataTable<TData, TValue>({
     location: string;
     area: string;
     reference: string;
+    refCountry: string;
     comment: string;
     source: string;
     observation: string;

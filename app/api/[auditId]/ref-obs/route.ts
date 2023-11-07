@@ -28,10 +28,22 @@ export async function POST(
         const body = await req.json();
         const {refId, obsId} = body;
 
+        const ref = await prismadb.reference.findFirst({
+            where:{
+              id: refId
+            }
+          }) 
+      
+          if(!ref) return new NextResponse("Reference is required", { status: 400 });
+      
+
+
         await prismadb.obsRef.create({
             data: {
                 obsId,
-                refId
+                refId,
+                reference: ref.reference,
+                country: ref.country
             },
           });
 

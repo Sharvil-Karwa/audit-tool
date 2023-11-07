@@ -61,7 +61,7 @@ export async function POST(
         return new NextResponse("Equipment id does not exist", { status: 400 });
       }
 
-      await prismadb.equipment.updateMany({
+      const de = await prismadb.equipment.updateMany({
         where:{
             id: equipmentId
         },
@@ -70,6 +70,10 @@ export async function POST(
             depId: dep.id
         }
       }) 
+
+      return new NextResponse(
+        "success"
+      );
 
     } catch (error) {
       console.error("[DEPARTMENTS_POST]", error);
