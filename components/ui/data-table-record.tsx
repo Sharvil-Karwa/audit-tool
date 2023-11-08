@@ -186,8 +186,6 @@ export function DataTable<TData, TValue>({
   }
   
 
-
- console.log(table.getRowModel().rows);
   
 
   return (
@@ -281,7 +279,7 @@ export function DataTable<TData, TValue>({
         <Table>
             <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow >
+                <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                     return (
                     <TableHead key={header.id}>
