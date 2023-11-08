@@ -18,7 +18,7 @@ export async function GET(
           return new NextResponse("Invalid record id", { status: 400 });
       }
 
-      const record = await prismadb.record.findUnique({
+      const record = await prismadb.record.findFirst({
           where: {
               id: rid
           }

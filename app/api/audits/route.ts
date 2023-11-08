@@ -18,6 +18,7 @@ export async function POST(
         const audit = await prismadb.audit.create({
             data:{
                 name,
+                recn: 0,
                 creatorId: userId
             }
         });

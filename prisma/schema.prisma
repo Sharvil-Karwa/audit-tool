@@ -15,6 +15,7 @@ model Audit {
   id         String      @id @default(uuid())
   name       String
   creatorId  String
+  recn Int
   equipments Equipment[] @relation("AuditToEquipment")
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
@@ -90,7 +91,8 @@ model Rating{
 } 
 
 model Record {
-  id          Int       @id @default(autoincrement())
+  rec_id           String     @id @default(uuid())
+  id          Int      
   auditId     String
   user        String
   department  String

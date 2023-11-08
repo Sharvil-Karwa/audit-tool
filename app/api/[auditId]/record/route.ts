@@ -14,8 +14,25 @@ export async function POST(
 ) {
     try{
 
+        const audit = await prismadb.audit.findFirst({
+            where:{
+                id: params.auditId
+            }
+        }) 
 
+        if(!audit){
+            return new NextResponse("Audit id is required", { status: 400 });
+        }
 
+        let n = audit.recn;
+
+        await prismadb.audit.update({
+            where:{
+                id: params.auditId
+            }, data:{
+                recn: n + 1
+            }
+        })
 
         const body = await req.json(); 
         const {
@@ -37,7 +54,8 @@ export async function POST(
 
         const Record = await prismadb.record.create({
             data:{
-                auditId,
+            id: n+1,
+            auditId,
             user , 
             department ,
             equipment ,

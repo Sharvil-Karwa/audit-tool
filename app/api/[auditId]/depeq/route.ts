@@ -43,7 +43,8 @@ export async function POST(
 
       const dep = await prismadb.department.findFirst({
         where:{
-            name
+            name,
+            auditId: params.auditId
         }
       }) 
 
