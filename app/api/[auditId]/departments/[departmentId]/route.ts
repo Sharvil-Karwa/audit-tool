@@ -93,9 +93,10 @@ export async function GET(
       }); 
   
       for (const eq of equipments) {
-        await prismadb.equipment.update({
+        await prismadb.equipment.updateMany({
           where:{
-            id: eq
+            id: eq,
+            auditId: params.auditId
           }, 
           data:{
             assigned: true,
@@ -135,7 +136,8 @@ export async function DELETE(
 
       await prismadb.equipment.updateMany({
         where: {
-          depId:  params.departmentId
+          depId:  params.departmentId,
+          auditId: params.auditId
         }, 
         data:{
           assigned: false,
@@ -145,7 +147,8 @@ export async function DELETE(
   
       await prismadb.equipment.updateMany({
         where:{
-          depId: params.departmentId
+          depId: params.departmentId,
+          auditId: params.auditId
         }, 
         data: {
           assigned: false,

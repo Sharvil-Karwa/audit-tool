@@ -63,7 +63,8 @@ export async function POST(
 
       const de = await prismadb.equipment.updateMany({
         where:{
-            id: equipmentId
+            id: equipmentId,
+            auditId: params.auditId
         },
         data:{
             assigned: true,

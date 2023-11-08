@@ -68,7 +68,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
     ];
 
     const users = [
-      ["username", "email", "password"]
+      ["email"]
     ]
 
     const wb = XLSX.utils.book_new();
@@ -143,9 +143,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
       const typeColumn = sheetData1.map((row) => row[3]);
       const locationColumn = sheetData1.map((row) => row[4]);
 
-      const usernameCol = sheetData2.map((row)=>row[0]);
-      const emailCol = sheetData2.map((row)=>row[1]);
-      const passwordCol = sheetData2.map((row)=>row[2]);
+      const emailCol = sheetData2.map((row)=>row[0]);
 
       const uniqueDepartments = Array.from(new Set(departmentColumn));
   
@@ -190,12 +188,12 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
         }
       }   
       
-      for(let i=1;i<usernameCol.length;i++){
+      for(let i=1;i<emailCol.length;i++){
         try{
           await axios.post(`/api/${params.auditId}/users`,{
-            "username" :  usernameCol[i],
+            "username" :  "",
             "email" : emailCol[i],
-            "password": passwordCol[i]
+            "password": ""
           }) 
         } 
         catch(error){

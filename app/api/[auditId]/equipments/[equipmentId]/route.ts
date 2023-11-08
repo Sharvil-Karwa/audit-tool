@@ -6,16 +6,17 @@ import prismadb from "@/lib/prismadb";
 
 export async function GET(
     req: Request,
-    { params }: { params: { equipmentId: string } }
+    { params }: { params: { equipmentId: string, auditId: string } }
   ) {
     try {
       if (!params.equipmentId) {
           return new NextResponse("Equipment id is required", { status: 400 });
       } 
   
-      const equipment = await prismadb.equipment.findUnique({
+      const equipment = await prismadb.equipment.findFirst({
         where: {
           id: params.equipmentId,
+          auditId : params.auditId
         }
       });
     
@@ -74,6 +75,7 @@ export async function PATCH(
     const equipment = await prismadb.equipment.updateMany({
       where: {
         id: params.equipmentId,
+        auditId: params.auditId
       },
       data: {
         name,
@@ -113,6 +115,7 @@ export async function DELETE(
     const equipment = await prismadb.equipment.deleteMany({
       where: {
         id: params.equipmentId,
+        auditId: params.auditId
       }
     });
   

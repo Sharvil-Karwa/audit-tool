@@ -5,13 +5,15 @@ const EquipmentPage = async ({
     params
 }:{
     params: {
-        equipmentId: string
+        equipmentId: string,
+        auditId: string
     }
 }) =>{
 
-    const equipment = await prismadb.equipment.findUnique({
+    const equipment = await prismadb.equipment.findFirst({
         where:{
-            id: params.equipmentId
+            id: params.equipmentId,
+            auditId: params.auditId
         }
     });
 

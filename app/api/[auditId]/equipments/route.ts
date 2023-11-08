@@ -39,6 +39,7 @@ export async function POST(
         const equipmentId = await prismadb.equipment.findFirst({
             where:{
                 id:id,
+                auditId: params.auditId
             }
         }) 
 

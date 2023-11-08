@@ -30,7 +30,8 @@ model Department {
 }
 
 model Equipment {
-  id                  String                @id
+  eq_id               String                @id @default(uuid())
+  id                  String                
   name                String
   location            String
   type                String

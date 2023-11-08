@@ -95,9 +95,10 @@ export async function POST(
   
   
       for (const eq of equipments) {
-        await prismadb.equipment.update({
+        await prismadb.equipment.updateMany({
           where:{
-            id: eq
+            id: eq,
+            auditId: params.auditId
           }, 
           data:{
             assigned: true,
