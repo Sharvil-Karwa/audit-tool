@@ -28,7 +28,6 @@ export async function POST(
         const Source = await prismadb.source.create({
             data:{
                 source,
-                auditId
             }
         });
         return NextResponse.json(Source);

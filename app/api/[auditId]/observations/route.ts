@@ -29,7 +29,6 @@ export async function POST(
             data:{
                 observation,
                 reference: reference,
-                auditId,
             }
         }); 
 

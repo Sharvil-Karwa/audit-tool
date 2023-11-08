@@ -37,7 +37,6 @@ export async function POST(
             data: {
                 areaId,
                 observationId,
-                auditId,
                 area_name,
                 obs,
             },

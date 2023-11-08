@@ -43,7 +43,6 @@ export async function POST(
             data: {
                 observationId: obs.id,
                 areaId: ar.id,
-                auditId: ar.auditId,
                 obs: obs.observation,
                 area_name: ar.area
             },
@@ -54,14 +53,3 @@ export async function POST(
         return new NextResponse ("Internal error", {status:500});
     }
 }
-
-// model AreaObservation {
-//     id           String     @id @default(uuid())
-//     observationId String
-//     areaId  String
-//     auditId String 
-//     obs String
-//     area_name String
-//     observation Observation @relation(fields: [observationId], references: [id])
-//     area Area  @relation(fields: [areaId], references: [id])
-//   }

@@ -93,9 +93,26 @@ export async function DELETE(
       }
     })
 
-    
     await prismadb.equipment.deleteMany({
       where: {
+        auditId: params.auditId
+      }
+    })
+
+    await prismadb.rating.deleteMany({
+      where:{
+        auditId: params.auditId
+      }
+    }) 
+
+    await prismadb.userAudit.deleteMany({
+      where:{
+        auditId: params.auditId
+      }
+    })
+
+    await prismadb.record.deleteMany({
+      where:{
         auditId: params.auditId
       }
     })

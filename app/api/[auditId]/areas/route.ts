@@ -58,7 +58,6 @@ export async function POST(
       const existingArea = await prismadb.area.findFirst({
         where: {
           area,
-          auditId,
         },
       });
   
@@ -69,7 +68,6 @@ export async function POST(
       const createdArea = await prismadb.area.create({
         data: {
           area,
-          auditId,
         },
       });
 
@@ -88,7 +86,6 @@ export async function POST(
           data: {
             areaId: createdArea.id,
             observationId: observationId.id,
-            auditId,
             area_name: createdArea.area,
             obs: observationId.observation,
           },

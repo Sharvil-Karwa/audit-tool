@@ -74,7 +74,6 @@ export async function GET(
           data: {
             areaId: updatedArea.id,
             observationId: observationId.id,
-            auditId, 
             area_name: updatedArea.area,
             obs: observationId.observation,
           },
