@@ -49,7 +49,9 @@ export async function POST(
 
         const user = await prismadb.user.create({
             data:{
+                username: "",
                 email,
+                password: "",
                 auditId: params.auditId
             }
         });
@@ -58,8 +60,7 @@ export async function POST(
             data:{
                 email: email,
                 auditId: params.auditId,
-                name: auditByCreatorId.name,
-                userId: user.id
+                name: auditByCreatorId.name
             }
         })
 

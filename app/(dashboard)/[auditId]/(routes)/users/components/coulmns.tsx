@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 
 export type UserColumn = {
   id: string
+  username: string
   email: string
   createdAt: string
 }

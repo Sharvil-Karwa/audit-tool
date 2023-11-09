@@ -100,9 +100,10 @@ export async function DELETE(
         return new NextResponse("User id is required", { status: 400 });
     } 
 
+
     await prismadb.userAudit.deleteMany({
       where:{
-        userId: params.userId,
+        id: userId,
         auditId: params.auditId
       }
     })

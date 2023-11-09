@@ -20,6 +20,7 @@ const usersPage = async ({
 
     const formattedUsers: UserColumn[] = users.map((item)=>({
         id: item.id,
+        username: item.username,
         email: item.email,
         createdAt: format(item.createdAt, "MMMM do, yyyy")
     }))
