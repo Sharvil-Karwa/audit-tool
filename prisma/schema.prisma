@@ -124,8 +124,6 @@ model Reference{
 model User {
   id String @id @default(uuid())
   email String
-  username String
-  password String
   auditId String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -141,6 +139,7 @@ model ObsRef {
 
 model userAudit{
   id String @id @default(uuid())
+  userId String 
   email String
   auditId String
   name String
