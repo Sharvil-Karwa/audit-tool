@@ -30,9 +30,9 @@ export const RecordClient: React.FC<RecordClientProps> = ({
                 /> 
             </div>
             <Separator />
-            <DataTable columns={columns} data={data} />
-            <Separator />
             <ApiList entityName="record" entityIdName="recordId"/>
+            <Separator />
+            <DataTable columns={columns} data={data} />
         </>
     )
 }

@@ -9,20 +9,30 @@ export async function POST(
     try{
         const {userId} = auth(); 
         const body = await req.json(); 
-        const {rating} = body;
+        const {email} = body;
         const auditId = params.auditId; 
+
+        
 
         if(!userId){ 
             return new NextResponse("Unauthenticated", {status:401});
         }
-        if(!rating){ 
-            return new NextResponse("Rating is required", {status:400});
+        if(!email){ 
+            return new NextResponse("Email is required", {status:400});
         } 
-        if (!auditId) {
-            return new NextResponse("Audit id is required", { status: 400 });
+
+        const audit = await prismadb.audit.findFirst({
+            where:{
+                id: auditId
+            }
+        })
+
+        if(!audit){
+            return new NextResponse("Audit not found", {status:400});
         }
-        const curruser = await currentUser();
-        const adminemail = curruser ? curruser.emailAddresses[0].emailAddress : "";
+        
+        const user = await currentUser();
+        const adminemail = user ? user.emailAddresses[0].emailAddress : "";
 
         const auditAdmin = await prismadb.adminAudit.findFirst({
             where:{
@@ -34,16 +44,30 @@ export async function POST(
         if(!auditAdmin){
             return new NextResponse("Unauthorized", {status:403});
         } 
-
-        const Rating = await prismadb.rating.create({
-            data:{
-                rating,
+        
+        
+        const existingAdmin = await prismadb.adminAudit.findFirst({
+            where:{
+                email,
                 auditId
             }
-        });
-        return NextResponse.json(Rating);
+        }) 
+
+        if(existingAdmin){
+            return new NextResponse("Admin with this email already exists", { status: 400 });
+        } 
+
+        const admin = await prismadb.adminAudit.create({
+            data:{
+                email,
+                auditId,
+                name: audit.name
+            }
+        })
+
+        return NextResponse.json(admin);
     } catch (error){
-        console.log('[RATINGS_POST]', error);
+        console.log('[ADMINS_POST]', error);
         return new NextResponse ("Internal error", {status:500});
     }
 }
@@ -57,15 +81,15 @@ export async function GET(
             return new NextResponse("Audit id is required", { status: 400 });
         }
 
-        const ratings = await prismadb.rating.findMany({
+        const admins = await prismadb.adminAudit.findMany({
             where:{
                 auditId: params.auditId,
             }
         });
 
-        return NextResponse.json(ratings);
+        return NextResponse.json(admins);
     } catch (error){
-        console.log('[RATINGS_GET]', error);
+        console.log('[ADMINS_GET]', error);
         return new NextResponse ("Internal error", {status:500});
     }
 }

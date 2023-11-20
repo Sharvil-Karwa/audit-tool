@@ -1,5 +1,5 @@
 import prismadb from "@/lib/prismadb";
-import { auth } from "@clerk/nextjs";
+import { auth, currentUser } from "@clerk/nextjs";
 import {NextResponse} from "next/server";
 import { any } from "zod";
 
@@ -49,17 +49,20 @@ export async function POST(
       }
 
       
-  
-      const auditByCreatorId = await prismadb.audit.findFirst({
-        where: {
-          id: auditId,
-          creatorId: userId,
-        },
-      });
-  
-      if (!auditByCreatorId) {
-        return new NextResponse("Unauthorized", { status: 403 });
-      }
+      const curruser = await currentUser();
+      const adminemail = curruser ? curruser.emailAddresses[0].emailAddress : "";
+
+      const auditAdmin = await prismadb.adminAudit.findFirst({
+          where:{
+              auditId,
+              email: adminemail
+          }
+      }) 
+
+      if(!auditAdmin){
+          return new NextResponse("Unauthorized", {status:403});
+      } 
+
 
 
   

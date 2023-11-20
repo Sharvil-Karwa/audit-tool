@@ -26,14 +26,6 @@ export async function POST(
 
         let n = audit.recn;
 
-        await prismadb.audit.update({
-            where:{
-                id: params.auditId
-            }, data:{
-                recn: n + 1
-            }
-        })
-
         const body = await req.json(); 
         const {
             auditId,
@@ -52,8 +44,36 @@ export async function POST(
             refCountry
         } = body;
 
+        const userAudit = await prismadb.userAudit.findFirst({
+            where:{
+                email: user
+            }
+        }) 
+
+        if(!userAudit){
+            return new NextResponse("Unauthorized", { status: 403 });
+        }
+
+        const duplicateRec = await prismadb.record.findFirst({
+            where:{
+                user,
+                auditName: audit.name,
+                auditId,
+                eq_id,
+                area,
+                observation,
+                reference,
+                comment
+            }
+        })
+
+        if(duplicateRec){
+            return NextResponse.json(duplicateRec);
+        }
+
         const Record = await prismadb.record.create({
             data:{
+            auditName: audit.name,
             id: n+1,
             auditId,
             user , 
@@ -71,6 +91,13 @@ export async function POST(
             refCountry
             }
         });
+        await prismadb.audit.update({
+            where:{
+                id: params.auditId
+            }, data:{
+                recn: n + 1
+            }
+        })
         return NextResponse.json( {
             headers: corsHeaders
           });

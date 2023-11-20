@@ -2,12 +2,14 @@
 
 import React, { useState } from "react";
 import * as z from "zod";
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Download, MoveDown, Table, Trash } from "lucide-react";
-import { Audit } from "@prisma/client";
+import { AdminAudit, Audit } from "@prisma/client";
 import { useParams, useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -37,12 +39,16 @@ const formSchema = z.object({
 type SettingsFormValues = z.infer<typeof formSchema>;
 
 interface SettingsFormProps {
-  initialData: Audit;
+  initialData: AdminAudit;
+  offline_val: Boolean
 }
 
 export const SettingsForm: React.FC<SettingsFormProps> = ({
   initialData,
+  offline_val
 }) => {
+
+
   const params = useParams();
   const router = useRouter();
   const origin = useOrigin();
@@ -56,6 +62,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
   const [uploadedData4, setUploadedData4] = useState<any>(null);
   const [uploadedData5, setUploadedData5] = useState<any>(null);
   const [uploadedData6, setUploadedData6] = useState<any>(null);
+  const [offline, setOffline] = useState(offline_val); 
 
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(formSchema),
@@ -83,8 +90,12 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
 
   const onSubmit = async (data: SettingsFormValues) => {
     try {
+      console.log("data", data);
       setLoading(true);
-      await axios.patch(`/api/audits/${params.auditId}`, data);
+      await axios.patch(`/api/audits/${params.auditId}`, {
+        "name" : data.name,
+        "offline" : offline
+      });
       router.refresh();
       toast.success('Audit updated.');
     } catch (error: any) {
@@ -248,6 +259,11 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
           )
         }
         {
+          !uploading && <div>
+
+          </div>
+        }
+        {
           !uploading && 
 
           <Button
@@ -279,11 +295,22 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
               )}
             />
           </div>
+          <div className="flex items-center space-x-2">
+            <Label>Offline download and upload</Label>
+          <Switch
+                      checked={offline==true ? true: false}
+                      onCheckedChange={()=>{
+                        setOffline(!offline)
+                      }}
+                  
+                    />
+          </div>
           <Button disabled={loading} className="ml-auto" type="submit">
             Save changes
           </Button>
         </form>
       </Form>
+      
       <Separator />
       <ApiAlert
         title="NEXT_PUBLIC_API_URL"

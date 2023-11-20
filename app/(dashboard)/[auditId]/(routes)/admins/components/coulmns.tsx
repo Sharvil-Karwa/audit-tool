@@ -6,13 +6,13 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-export type UserColumn = {
+export type AdminColumn = {
   id: string
   email: string
   createdAt: string
 }
 
-export const columns: ColumnDef<UserColumn>[] = [
+export const columns: ColumnDef<AdminColumn>[] = [
   {
     id: "select",
     header: ({ table }) => (

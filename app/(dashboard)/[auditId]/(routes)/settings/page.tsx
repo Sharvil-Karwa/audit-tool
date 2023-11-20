@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { auth } from "@clerk/nextjs";
+import { auth, currentUser } from "@clerk/nextjs";
 
 import prismadb from "@/lib/prismadb";
 
@@ -16,21 +16,35 @@ const SettingsPage = async ({
     redirect('/sign-in');
   }
 
-  const audit = await prismadb.audit.findFirst({
-    where: {
-      id: params.auditId,
-      creatorId:userId
-    }
-  });
+  
+  const user = await currentUser();
+  const email = user ? user.emailAddresses[0].emailAddress : "";
 
-  if (!audit) {
+  const adminAudit = await prismadb.adminAudit.findFirst({
+    where:{
+      auditId: params.auditId,
+      email
+    }
+  })
+
+  const audit = await prismadb.audit.findFirst({
+    where:{
+      id: params.auditId
+    }
+  })
+
+  if(!audit){
     redirect('/');
   }
+  
+  if (!adminAudit) {
+    redirect('/');
+  };
 
   return ( 
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <SettingsForm initialData={audit} />
+        <SettingsForm offline_val={audit.offline} initialData={adminAudit} />
       </div>
     </div>
   );

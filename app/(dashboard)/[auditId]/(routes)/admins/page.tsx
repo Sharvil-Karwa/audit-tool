@@ -1,15 +1,15 @@
 import prismadb from "@/lib/prismadb";
-import { UserClient } from "./components/client";
-import { UserColumn } from "./components/coulmns";
+import { AdminClient } from "./components/client";
+import { AdminColumn } from "./components/coulmns";
 import { format } from "date-fns";
 
-const usersPage = async ({
+const adminsPage = async ({
     params
 }:{
     params: {auditId: string}
 }) => {
 
-    const users = await prismadb.user.findMany({
+    const admins = await prismadb.adminAudit.findMany({
         where:{
             auditId: params.auditId,
         },
@@ -18,7 +18,7 @@ const usersPage = async ({
         }
     })
 
-    const formattedUsers: UserColumn[] = users.map((item)=>({
+    const formattedAdmins: AdminColumn[] = admins.map((item)=>({
         id: item.id,
         email: item.email,
         createdAt: format(item.createdAt, "MMMM do, yyyy")
@@ -27,10 +27,10 @@ const usersPage = async ({
     return(
         <div className="flex-col">
             <div className="flex-1 space-y-4 p-8 pt-6">
-                <UserClient data={formattedUsers}/>
+                <AdminClient data={formattedAdmins}/>
             </div>
         </div>
     )
 } 
 
-export default usersPage;
+export default adminsPage;

@@ -17,6 +17,7 @@ model Audit {
   creatorId  String
   recn Int
   equipments Equipment[] @relation("AuditToEquipment")
+  offline Boolean
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
 }
@@ -94,6 +95,7 @@ model Record {
   rec_id           String     @id @default(uuid())
   id          Int      
   auditId     String
+  auditName String
   user        String
   department  String
   equipment   String
@@ -124,8 +126,6 @@ model Reference{
 model User {
   id String @id @default(uuid())
   email String
-  username String
-  password String
   auditId String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -145,3 +145,12 @@ model userAudit{
   auditId String
   name String
 }
+
+model AdminAudit {
+  id String @id @default(uuid())
+  email String
+  name String
+  auditId String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+} 

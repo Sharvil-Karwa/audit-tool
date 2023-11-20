@@ -16,10 +16,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AlertModal } from "@/components/modals/alert-modal";
 
-import { UserColumn } from "./coulmns";
+import { AdminColumn } from "./coulmns";
 
 interface CellActionProps {
-  data: UserColumn;
+  data: AdminColumn;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({
@@ -33,11 +33,11 @@ export const CellAction: React.FC<CellActionProps> = ({
   const onConfirm = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${params.auditId}/users/${data.id}`);
-      toast.success('User deleted.');
+      await axios.delete(`/api/${params.auditId}/admins/${data.id}`);
+      toast.success('Admin deleted.');
       router.refresh();
     } catch (error) {
-      toast.error('Something went wrong');
+      toast.error('Deleting admins is restricted to the audit creator');
     } finally {
       setOpen(false);
       setLoading(false);
@@ -46,7 +46,7 @@ export const CellAction: React.FC<CellActionProps> = ({
 
   const onCopy = (id: string) => {
     navigator.clipboard.writeText(id);
-    toast.success('User ID copied to clipboard.');
+    toast.success('Admin ID copied to clipboard.');
   }
 
   return (

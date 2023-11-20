@@ -1,5 +1,5 @@
 import prismadb from "@/lib/prismadb";
-import { auth } from "@clerk/nextjs";
+import { auth, currentUser } from "@clerk/nextjs";
 import {NextResponse} from "next/server";
 
 export async function POST(
@@ -15,31 +15,28 @@ export async function POST(
         if(!userId){ 
             return new NextResponse("Unauthenticated", {status:401});
         }
-        // if(!username){ 
-        //     return new NextResponse("Username is required", {status:400});
-        // } 
         if(!email){ 
             return new NextResponse("Email is required", {status:400});
         } 
-        // if (!password) {
-        //     return new NextResponse("Password is required", { status: 400 });
-        // }
 
-        const auditByCreatorId = await prismadb.audit.findFirst({
+        const curruser = await currentUser();
+        const adminemail = curruser ? curruser.emailAddresses[0].emailAddress : "";
+
+        const auditAdmin = await prismadb.adminAudit.findFirst({
             where:{
-                id: auditId,
-                creatorId: userId
+                auditId,
+                email: adminemail
             }
         }) 
 
-        if(!auditByCreatorId){
+        if(!auditAdmin){
             return new NextResponse("Unauthorized", {status:403});
         } 
         
         const existingUser = await prismadb.user.findFirst({
             where:{
-                email: email,
-                auditId: params.auditId
+                email,
+                auditId
             }
         }) 
 
@@ -49,9 +46,7 @@ export async function POST(
 
         const user = await prismadb.user.create({
             data:{
-                username: "",
                 email,
-                password: "",
                 auditId: params.auditId
             }
         });
@@ -60,13 +55,13 @@ export async function POST(
             data:{
                 email: email,
                 auditId: params.auditId,
-                name: auditByCreatorId.name
+                name: auditAdmin.name
             }
         })
 
         return NextResponse.json(user);
     } catch (error){
-        console.log('[EQUIPMENTS_POST]', error);
+        console.log('[USERS_POST]', error);
         return new NextResponse ("Internal error", {status:500});
     }
 }

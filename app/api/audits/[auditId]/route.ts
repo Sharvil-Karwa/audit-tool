@@ -4,7 +4,6 @@ import { auth } from "@clerk/nextjs";
 import prismadb from "@/lib/prismadb";
 
 
-
 export async function GET(
   req: Request,
   { params }: { params: { auditId: string } }
@@ -22,6 +21,7 @@ export async function GET(
       select: {
         id: true,
         name: true,
+        offline: true
       },
     }) 
     return NextResponse.json(audit);
@@ -39,7 +39,7 @@ export async function PATCH(
     const { userId } = auth();
     const body = await req.json();
 
-    const { name } = body;
+    const { name, offline } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -57,12 +57,22 @@ export async function PATCH(
     const audit = await prismadb.audit.updateMany({
       where: {
         id: params.auditId,
-        creatorId: userId,
       },
       data: {
-        name
+        name,
+        offline
       }
     });
+
+    await prismadb.adminAudit.updateMany({
+      where:{
+        auditId: params.auditId
+      },
+      data:{
+        name,
+
+      }
+    })
   
     return NextResponse.json(audit);
   } catch (error) {
@@ -111,7 +121,7 @@ export async function DELETE(
       }
     })
 
-    await prismadb.record.deleteMany({
+    await prismadb.adminAudit.deleteMany({
       where:{
         auditId: params.auditId
       }

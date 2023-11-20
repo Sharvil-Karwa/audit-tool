@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { auth } from '@clerk/nextjs';
+import { auth, currentUser } from '@clerk/nextjs';
 
 // import Navbar from '@/components/navbar'
 import prismadb from '@/lib/prismadb';
@@ -18,14 +18,18 @@ export default async function DashboardLayout({
     redirect('/sign-in');
   }
 
-  const audit = await prismadb.audit.findFirst({ 
-    where: {
-      id: params.auditId,
-      creatorId: userId,
-    }
-   });
+  const user = await currentUser();
+  const email = user ? user.emailAddresses[0].emailAddress : "";
 
-  if (!audit) {
+  const adminAudit = await prismadb.adminAudit.findFirst({
+    where:{
+      auditId: params.auditId,
+      email
+    }
+  })
+
+  
+  if (!adminAudit) {
     redirect('/');
   };
 

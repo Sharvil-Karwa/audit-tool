@@ -1,4 +1,4 @@
-import { UserButton, auth } from "@clerk/nextjs";
+import { UserButton, auth, currentUser } from "@clerk/nextjs";
 import { MainNav } from "./main-nav";
 import AuditSwitcher from "./audit-switcher";
 import { redirect } from "next/navigation";
@@ -6,17 +6,20 @@ import prismadb from "@/lib/prismadb";
 
 const Navbar = async () => {
 
-    const {userId} = auth();
+    const {userId} = auth(); 
 
     if(!userId){
         redirect("/sign-in");
     } 
 
-    const audits = await prismadb.audit.findMany({
+    const user = await currentUser();
+    const email = user ? user.emailAddresses[0].emailAddress : "";
+
+    const audits = await prismadb.adminAudit.findMany({
         where: {
-          creatorId: userId
+          email
         }
-      });
+    });
 
     return(
         <div className="border-b">

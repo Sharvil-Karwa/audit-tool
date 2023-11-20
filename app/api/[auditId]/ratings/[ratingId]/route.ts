@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs";
+import { auth, currentUser } from "@clerk/nextjs";
 
 import prismadb from "@/lib/prismadb";
 
@@ -50,15 +50,17 @@ export async function PATCH(
     if (!params.ratingId) {
         return new NextResponse("Rating id is required", { status: 400 });
     } 
+    const curruser = await currentUser();
+    const adminemail = curruser ? curruser.emailAddresses[0].emailAddress : "";
 
-    const auditByCreatorId = await prismadb.audit.findFirst({
+    const auditAdmin = await prismadb.adminAudit.findFirst({
         where:{
-            id: params.auditId,
-            creatorId: userId
+            auditId: params.auditId,
+            email: adminemail
         }
     }) 
 
-    if(!auditByCreatorId){
+    if(!auditAdmin){
         return new NextResponse("Unauthorized", {status:403});
     } 
 

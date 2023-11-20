@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs";
+import { auth, currentUser } from "@clerk/nextjs";
 
 import prismadb from "@/lib/prismadb";
 
@@ -52,16 +52,20 @@ export async function GET(
         return new NextResponse("Audit id is required", { status: 400 });
       }
   
-      const auditByCreatorId = await prismadb.audit.findFirst({
-        where: {
-          id: auditId,
-          creatorId: userId,
-        },
-      });
-  
-      if (!auditByCreatorId) {
-        return new NextResponse("Unauthorized", { status: 403 });
-      }
+      const curruser = await currentUser();
+        const adminemail = curruser ? curruser.emailAddresses[0].emailAddress : "";
+
+        const auditAdmin = await prismadb.adminAudit.findFirst({
+            where:{
+                auditId,
+                email: adminemail
+            }
+        }) 
+
+        if(!auditAdmin){
+            return new NextResponse("Unauthorized", {status:403});
+        } 
+
   
       // Update the department's name
       const updatedDepartment = await prismadb.department.update({

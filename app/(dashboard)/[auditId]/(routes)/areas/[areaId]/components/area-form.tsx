@@ -53,6 +53,7 @@ export const AreasForm: React.FC<AreasFormProps> = ({
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const title = initialData ? 'Edit area' : 'Create area';
   const description = initialData ? 'Edit an area.' : 'Add a new area';
@@ -165,35 +166,58 @@ export const AreasForm: React.FC<AreasFormProps> = ({
                 </FormItem>
               )}
             />
-          <FormField 
-  control={form.control} 
-  name="observations"
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel>Observations</FormLabel>
-      {observations.map((observation) => (
-        <div key={observation.id}>
-          <label>
+        <FormField 
+      control={form.control} 
+      name="observations"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Observations</FormLabel>
+          <div className="mb-4">
             <input
-              type="checkbox"
-              name="observations"
-              value={observation.id}
-              onChange={() => {
-                const updatedObservations = (field.value ?? []).includes(observation.id)
-                  ? field.value?.filter((id) => id !== observation.id) ?? []
-                  : [...(field.value ?? []), observation.id];
-                form.setValue("observations", updatedObservations);
-              }}
-              checked={(field.value ?? []).includes(observation.id)}
+              type="text"
+              placeholder="Search observations"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="border border-gray-300 rounded-md px-3 py-2 w-full"
             />
-            {observation.observation} 
-          </label>
-        </div>
-      ))}
-      <FormMessage />
-    </FormItem>
-  )}
-/>
+          </div>
+          <div className="border rounded-lg overflow-hidden">
+            <table className="min-w-full">
+              <tbody>
+                {observations
+                  .filter((observation) =>
+                    observation.observation.toLowerCase().includes(searchTerm.toLowerCase())
+                  )
+                  .map((observation) => (
+                    <tr key={observation.id} className="border-b">
+                      <td className="py-3 px-4">
+                        <label className="flex items-center">
+                          <input
+                            type="checkbox"
+                            name="observations"
+                            value={observation.id}
+                            onChange={() => {
+                              const updatedObservations = (field.value ?? []).includes(observation.id)
+                                ? field.value?.filter((id) => id !== observation.id) ?? []
+                                : [...(field.value ?? []), observation.id];
+                              form.setValue("observations", updatedObservations);
+                            }}
+                            checked={(field.value ?? []).includes(observation.id)}
+                            className="mr-2"
+                          />
+                          <span>{observation.observation}</span>
+                        </label>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+
 
             
           </div>

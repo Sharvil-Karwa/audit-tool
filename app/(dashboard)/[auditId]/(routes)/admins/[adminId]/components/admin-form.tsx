@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
 import { Trash } from "lucide-react"
-import {Audit, User} from "@prisma/client"
+import {Audit, AdminAudit} from "@prisma/client"
 import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
 
@@ -26,18 +26,16 @@ import { AlertModal } from "@/components/modals/alert-modal"
 import { useOrigin } from "@/hooks/use-origin"
 
 const formSchema = z.object({
-  // username: z.string().min(1),
   email: z.string().min(1),
-  // password: z.string().min(1),
 });
 
-type UsersFormValues = z.infer<typeof formSchema>
+type AdminsFormValues = z.infer<typeof formSchema>
 
-interface UsersFormProps {
-  initialData: User | null;
+interface AdminsFormProps {
+  initialData: AdminAudit | null;
 };
 
-export const UsersForm: React.FC<UsersFormProps> = ({
+export const AdminsForm: React.FC<AdminsFormProps> = ({
   initialData
 }) => {
   const params = useParams();
@@ -47,34 +45,32 @@ export const UsersForm: React.FC<UsersFormProps> = ({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const title = initialData ? 'Edit user' : 'Create user';
-  const description = initialData ? 'Edit an user.' : 'Add a new user';
-  const toastMessage = initialData ? 'User updated.' : 'User created.';
+  const title = initialData ? 'Edit admin' : 'Create admin';
+  const description = initialData ? 'Edit an admin.' : 'Add a new admin';
+  const toastMessage = initialData ? 'Admin updated.' : 'Admin created.';
   const action = initialData ? 'Save changes' : 'Create';
 
 
-  const form = useForm<UsersFormValues>({
+  const form = useForm<AdminsFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-        // username: '',
         email: '',
-        // password: '',
     }
   });
 
-  const onSubmit = async (data: UsersFormValues) => {
+  const onSubmit = async (data: AdminsFormValues) => {
     try { 
       setLoading(true);
       if(initialData){
-        await axios.patch(`/api/${params.auditId}/users/${params.userId}`, data);
+        await axios.patch(`/api/${params.auditId}/admins/${params.adminId}`, data);
       } else {
-        await axios.post(`/api/${params.auditId}/users`, data);
+        await axios.post(`/api/${params.auditId}/admins`, data);
       }
       router.refresh();
-      router.push(`/${params.auditId}/users`)
+      router.push(`/${params.auditId}/admins`)
       toast.success(toastMessage);
     } catch (error: any) {
-      toast.error('User with this email already exists');
+      toast.error('Something went wrong.');
     } finally {
       setLoading(false);
     }
@@ -83,12 +79,12 @@ export const UsersForm: React.FC<UsersFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${params.auditId}/users/${params.userId}`);
+      await axios.delete(`/api/${params.auditId}/admins/${params.adminId}`);
       router.refresh();
-      router.push(`/${params.auditId}/users`);
-      toast.success('User deleted.');
+      router.push(`/${params.auditId}/admins`);
+      toast.success('Admin deleted.');
     } catch (error: any) {
-      toast.error('Something went wrong');
+      toast.error('Deleting admins is restricted to the audit creator');
     } finally {
       setLoading(false);
       setOpen(false);
@@ -125,7 +121,7 @@ export const UsersForm: React.FC<UsersFormProps> = ({
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Enter email" {...field} />
+                    <Input disabled={loading} placeholder="Enter admin email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
